@@ -7,8 +7,7 @@
     "url": "git://github.com/jamjon3/UsfCAStokenAuth.git"
   },
   "main": [
-    "ng-table.js",
-    "ng-table.css"
+    "usfcastokenauth.js"
   ],
   "ignore": [
     "examples",

@@ -14,8 +14,8 @@
     "type": "git",
     "url": "git://github.com/jamjon3/UsfCAStokenAuth.git"
   },
-  "filename": "restangular.min.js",
-  "main": "./dist/restangular.min.js",
+  "filename": "usfcastokenauth.min.js",
+  "main": "./usfcastokenauth.min.js",
   "dependencies": {
     "angularLocalStorage": ">=0.1.7",
   },
