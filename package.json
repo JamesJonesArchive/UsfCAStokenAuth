@@ -17,6 +17,7 @@
   "filename": "usfcastokenauth.min.js",
   "main": "./usfcastokenauth.min.js",
   "dependencies": {
+    "grunt": "~0.4.1",
     "angularLocalStorage": ">=0.1.7",
   },
   "devDependencies": {
