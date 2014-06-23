@@ -1,0 +1,29 @@
+{
+  "name": "usf-castoken-auth",
+  "version": "0.0.1",
+  "description": "USF Service for CAS backed Token Authentication",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mgonto/restangular.git"
+  },
+  "main": [
+    "ng-table.js",
+    "ng-table.css"
+  ],
+  "ignore": [
+    "examples",
+    "src",
+    "node_modules"
+  ],
+  "dependencies": {
+    "angular": "~1",
+    "angular-resource": "~1",
+    "angular-cookies": "~1",
+    "angular-sanitize": "~1",
+    "angular-route": "~1"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1",
+    "angular-scenario": "~1"
+  }
+}
