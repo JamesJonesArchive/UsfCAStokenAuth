@@ -16,6 +16,7 @@
     "node_modules"
   ],
   "dependencies": {
+    "angularLocalStorage": "~0.1.7",
     "angular": "~1",
     "angular-resource": "~1",
     "angular-cookies": "~1",

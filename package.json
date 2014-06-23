@@ -10,8 +10,14 @@
       "website": "http://www.usf.edu/"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jamjon3/UsfCAStokenAuth.git"
+  },
+  "filename": "restangular.min.js",
+  "main": "./dist/restangular.min.js",
   "dependencies": {
-    
+    "angularLocalStorage": ">=0.1.7",
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -40,6 +46,9 @@
   },
   "engines": {
     "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "grunt test --verbose"
   },
   "license": "GPL2.0"
 }
