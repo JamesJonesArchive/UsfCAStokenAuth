@@ -11,12 +11,13 @@ module.exports = function(grunt) {
                 ' * @version v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>' +
                 ' * @link <%= pkg.homepage %>',
                 ' * @author <%= pkg.author %>',
-                ' * @license MIT License, http://www.opensource.org/licenses/MIT',
+                ' * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html',
                 ' */'
               ].join('\n')
     },
     dirs: {
-      dest: 'dist'
+      // dest: 'dist'
+      dest: '.'
     },
     concat: {
       options: {
@@ -24,6 +25,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: ['src/*.js'],
+        // dest: 'usfcastokenauth.js'
         dest: '<%= dirs.dest %>/<%= pkg.name %>.js'
       }
     },
@@ -52,39 +54,39 @@ module.exports = function(grunt) {
         jshintrc: true
       }
     },
-    karma: {
-      options: {
-        configFile: 'karma.conf.js'
-      },
-      build: {
-        singleRun: true,
-        autoWatch: false
-      },
-      debug: {
-        singleRun: false,
-        autoWatch: true,
-        browsers: ['Chrome']
-      },
-      travis: {
-        singleRun: true,
-        autoWatch: false,
-        browsers: ['Firefox']
-      },
-      travisUnderscore: {
-        singleRun: true,
-        autoWatch: false,
-        browsers: ['Firefox'],
-        configFile: 'karma.underscore.conf.js'
-      },
-      buildUnderscore: {
-        configFile: 'karma.underscore.conf.js',
-        singleRun: true,
-        autoWatch: false
-      },
-      dev: {
-        autoWatch: true
-      }
-    },
+    //karma: {
+    //  options: {
+    //    configFile: 'karma.conf.js'
+    //  },
+    //  build: {
+    //    singleRun: true,
+    //    autoWatch: false
+    //  },
+    //  debug: {
+    //    singleRun: false,
+    //    autoWatch: true,
+    //    browsers: ['Chrome']
+    //  },
+    //  travis: {
+    //    singleRun: true,
+    //    autoWatch: false,
+    //    browsers: ['Firefox']
+    //  },
+    //  travisUnderscore: {
+    //    singleRun: true,
+    //    autoWatch: false,
+    //    browsers: ['Firefox'],
+    //    configFile: 'karma.underscore.conf.js'
+    //  },
+    //  buildUnderscore: {
+    //    configFile: 'karma.underscore.conf.js',
+    //    singleRun: true,
+    //    autoWatch: false
+    //  },
+    //  dev: {
+    //    autoWatch: true
+    //  }
+    //},
     changelog: {
       options: {
         dest: 'CHANGELOG.md'
@@ -105,7 +107,7 @@ module.exports = function(grunt) {
 
   grunt.renameTask('bower', 'bowerInstall');
 
-  grunt.loadNpmTasks('grunt-karma');
+  // grunt.loadNpmTasks('grunt-karma');
 
   grunt.loadNpmTasks('grunt-conventional-changelog');
 
@@ -116,13 +118,17 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['build']);
 
   // Build task.
-  grunt.registerTask('build', ['bowerInstall', 'karma:build', 'karma:buildUnderscore', 'concat', 'uglify', 'zip']);
+  // grunt.registerTask('build', ['bowerInstall', 'karma:build', 'karma:buildUnderscore', 'concat', 'uglify', 'zip']);
+  grunt.registerTask('build', ['bowerInstall', 'concat', 'uglify', 'zip']);
 
-  grunt.registerTask('test', ['karma:build', 'karma:buildUnderscore']);
+  // grunt.registerTask('test', ['karma:build', 'karma:buildUnderscore']);
+  grunt.registerTask('test', []);
 
-  grunt.registerTask('test-debug', ['karma:debug']);
+  // grunt.registerTask('test-debug', ['karma:debug']);
+  grunt.registerTask('test-debug', []);
 
-  grunt.registerTask('travis', ['karma:travis', 'karma:travisUnderscore']);
+  // grunt.registerTask('travis', ['karma:travis', 'karma:travisUnderscore']);
+  grunt.registerTask('travis', []);
 
   // Provides the "bump" task.
   grunt.registerTask('bump', 'Increment version number', function() {
