@@ -4,7 +4,7 @@
   "description": "USF Service for CAS backed Token Authentication",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mgonto/restangular.git"
+    "url": "git://github.com/jamjon3/UsfCAStokenAuth.git"
   },
   "main": [
     "ng-table.js",
