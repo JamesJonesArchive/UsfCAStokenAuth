@@ -1,7 +1,18 @@
 {
   "name": "usfcastokenauth",
-  "version": "0.0.0",
-  "dependencies": {},
+  "version": "0.0.1",
+  "description": "USF Service for CAS backed Token Authentication",
+  "homepage": "https://github.com/mgonto/restangular",
+  "author": "James Jones <jamjon3@gmail.com>",
+  "maintainers": [
+    {
+      "name": "James Jones",
+      "website": "http://www.usf.edu/"
+    }
+  ],
+  "dependencies": {
+    
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-autoprefixer": "~0.4.0",
@@ -29,5 +40,6 @@
   },
   "engines": {
     "node": ">=0.10.0"
-  }
+  },
+  "license": "GPL2.0"
 }
