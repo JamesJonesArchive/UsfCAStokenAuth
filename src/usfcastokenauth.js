@@ -1,9 +1,4 @@
-/**
- * USF Service for CAS backed Token Authentication
- * @version v0.0.1-1 - 2014-06-24 * @link https://github.com/jamjon3/UsfCAStokenAuth
- * @author James Jones <jamjon3@gmail.com>
- * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
- */
+
 'use strict';
 
 angular.module('UsfCAStokenAuth')

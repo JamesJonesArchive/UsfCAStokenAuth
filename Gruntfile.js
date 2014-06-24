@@ -30,7 +30,7 @@ module.exports = function(grunt) {
       }
     },
     zip: {
-      '<%= dirs.dest %>/usfcastokenauth.zip': [
+      '<%= dirs.dest %>/<%= pkg.name %>.zip': [
         '<%= dirs.dest %>/<%= pkg.name %>.js',
         '<%= dirs.dest %>/<%= pkg.name %>.min.js'
       ]
@@ -54,39 +54,6 @@ module.exports = function(grunt) {
         jshintrc: true
       }
     },
-    //karma: {
-    //  options: {
-    //    configFile: 'karma.conf.js'
-    //  },
-    //  build: {
-    //    singleRun: true,
-    //    autoWatch: false
-    //  },
-    //  debug: {
-    //    singleRun: false,
-    //    autoWatch: true,
-    //    browsers: ['Chrome']
-    //  },
-    //  travis: {
-    //    singleRun: true,
-    //    autoWatch: false,
-    //    browsers: ['Firefox']
-    //  },
-    //  travisUnderscore: {
-    //    singleRun: true,
-    //    autoWatch: false,
-    //    browsers: ['Firefox'],
-    //    configFile: 'karma.underscore.conf.js'
-    //  },
-    //  buildUnderscore: {
-    //    configFile: 'karma.underscore.conf.js',
-    //    singleRun: true,
-    //    autoWatch: false
-    //  },
-    //  dev: {
-    //    autoWatch: true
-    //  }
-    //},
     changelog: {
       options: {
         dest: 'CHANGELOG.md'
