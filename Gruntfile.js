@@ -30,7 +30,7 @@ module.exports = function(grunt) {
       }
     },
     zip: {
-      '<%= dirs.dest %>/restangular.zip': [
+      '<%= dirs.dest %>/usfcastokenauth.zip': [
         '<%= dirs.dest %>/<%= pkg.name %>.js',
         '<%= dirs.dest %>/<%= pkg.name %>.min.js'
       ]
