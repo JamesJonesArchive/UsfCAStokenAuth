@@ -1,7 +1,7 @@
+(function () {
+  'use strict';
 
-'use strict';
-
-angular.module('UsfCAStokenAuth')
+  angular.module('UsfCAStokenAuth')
   .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$q','$log','$cookieStore','$cookies','$resource','applicationResources', function ($rootScope,$injector,storage,$window,$q,$log,$cookieStore,$cookies,$resource,applicationResources) {
     // Service logic
     // ...
@@ -216,3 +216,4 @@ angular.module('UsfCAStokenAuth')
       }      
     }
   }]);
+})();
