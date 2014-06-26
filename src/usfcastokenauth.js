@@ -1,9 +1,7 @@
 (function (window, angular, undefined) {
   'use strict';
 
-  angular.module('UsfCAStokenAuth',[
-    'angularLocalStorage'
-  ])
+  angular.module('UsfCAStokenAuth',[])
   .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$q','$log','$cookieStore','$cookies','$resource','applicationResources', function ($rootScope,$injector,storage,$window,$q,$log,$cookieStore,$cookies,$resource,applicationResources) {
     // Service logic
     // ...
