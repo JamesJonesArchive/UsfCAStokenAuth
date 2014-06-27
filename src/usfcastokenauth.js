@@ -178,8 +178,7 @@
             return deferred.promise;
           } else {
             // This is where 302 redirect errors are
-            $log.info(rejection);
-            $window.alert("Rejection status is " + rejection.status);
+            $log.info({"Rejection" : rejection});
             
             return deferred.promise;
           }

@@ -1,6 +1,6 @@
 {
   "name": "usfcastokenauth",
-  "version": "0.0.1-1e",
+  "version": "0.0.1-1f",
   "description": "USF Service for CAS backed Token Authentication",
   "homepage": "https://github.com/jamjon3/UsfCAStokenAuth",
   "author": "James Jones <jamjon3@gmail.com>",
@@ -17,7 +17,7 @@
   "filename": "usfcastokenauth.min.js",
   "main": "./usfcastokenauth.min.js",
   "dependencies": {
-    "json3": "~3.2.6",
+    "json3": "~3.3.2",
     "es5-shim": "~3.4.0",
     "jquery": "~1.11.0",
     "grunt": "~0.4.5",
