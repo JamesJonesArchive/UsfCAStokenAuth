@@ -30,12 +30,15 @@ angular
 ## Wiring up services with Constants
 
 Your token services needs to be wired up as "constants" in your application. This
-is done by assigning key/value pairs on the "applicationResources" constant you define.
+is done by assigning key/value pairs on the "applicationResources" constant you define
+along with assigning your application a unique value for the "applicationUniqueId" (some arbitrary string).
 In a Yeoman angular app, that would be in the 'app.js' right above the "config" section.
 
-Here's an example for a service we'll call "exampleResource" and it's service URL:
+The "applicationUniqueId" just has some random unique id and here's an example for a service
+we'll call "exampleResource" and it's service URL:
 
 ```
+.constant('applicationUniqueId','f6765e988eb32cbda5dcd9ee2673c0a8')
 .constant("applicationResources",{
     "exampleResource": 'https://dev.it.usf.edu/~james/ExampleApp/services.php'
 })
