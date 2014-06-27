@@ -4,15 +4,17 @@
   angular.module('UsfCAStokenAuth',[
     'angularLocalStorage'
   ])
-  .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$q','$log','$cookieStore','$cookies','$resource','applicationResources', function ($rootScope,$injector,storage,$window,$q,$log,$cookieStore,$cookies,$resource,applicationResources) {
+  .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$q','$log','$cookieStore','$cookies','$resource','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$q,$log,$cookieStore,$cookies,$resource,UsfCAStokenAuthConstant) {
     // Service logic
     // ...
     var service = {
       initializeStorage: function() {
-        storage.bind($rootScope,'tokenAuth',{defaultValue: {buffer: [], applicationResources: {}}});
-        angular.forEach(applicationResources,function(value, key) {
-          if (!(key in $rootScope.tokenAuth.applicationResources)) {
-            $rootScope.tokenAuth.applicationResources[key] = {
+        var defaultValue = {};
+        defaultValue[UsfCAStokenAuthConstant.applicationUniqueId] = {buffer: [], applicationResources: {}};
+        storage.bind($rootScope,'tokenAuth',{defaultValue: defaultValue});
+        angular.forEach(UsfCAStokenAuthConstant.applicationResources,function(value, key) {
+          if (!(key in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources)) {
+            $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[key] = {
               url: value
             };
           }
@@ -21,7 +23,7 @@
       getApplicationResourceKey: function(url) {
         var keepGoing = true;
         var appkey = "";
-        angular.forEach(applicationResources,function(value, key) {
+        angular.forEach(UsfCAStokenAuthConstant.applicationResources,function(value, key) {
           if (keepGoing) {
             if (url === value) {
               appkey = key;
@@ -33,16 +35,16 @@
       },
       requestToken: function(appKey) {
         // Get the last 401 config in the buffer
-        // var config = $rootScope.tokenAuth.buffer.slice(-1)[0].config;
+        // var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config;
         // Get the applicationResource object
         // var appKey = this.getApplicationResourceKey(config.url);
         // $rootScope[$rootScope.buffer.slice(-1)[0].config.params.service].tokenService + "/request?callback=?"
-        $log.info("Requesting Token: " + $rootScope.tokenAuth.applicationResources[appKey].tokenService + "/request");
-        $log.info("App ID: "+ $rootScope.tokenAuth.applicationResources[appKey].appId);        
-        // params: { "service": $rootScope.tokenAuth.applicationResources[appKey].appId },
+        $log.info("Requesting Token: " + $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request");
+        $log.info("App ID: "+ $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId);        
+        // params: { "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId },
         // $window.alert("Cors problem 302");
         $log.info({ cookies: $cookies });
-        return $resource($rootScope.tokenAuth.applicationResources[appKey].tokenService + "/request",{},{
+        return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",{},{
           'getToken': { method: 'POST', responseType: "json", withCredentials: true,
             headers: {
               "Content-Type": "application/json",
@@ -66,20 +68,20 @@
           //    return data;
           //  }
           //}
-        }).getToken({ "service": $rootScope.tokenAuth.applicationResources[appKey].appId }).$promise;
+        }).getToken({ "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId }).$promise;
       }
     };
     $rootScope.$on('event:auth-loginRequired', function() {
-      $log.info($rootScope.tokenAuth.buffer.slice(-1)[0].config.data);
+      $log.info($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config.data);
       // Temporily comment until a token can be retrieved
       $window.alert("Temporary Stop before the redirect to the tokenService!");
-      $window.location.assign($rootScope.tokenAuth.buffer.slice(-1)[0].config.data.tokenService);
+      $window.location.assign($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config.data.tokenService);
     });
     $rootScope.$on('event:auth-tokenRequired',function() {
       service.requestToken().then(function(data) {
         //$window.alert("This is the Token response");
         //$window.alert(JSON.stringify(data));
-        $rootScope[$rootScope.tokenAuth.buffer.slice(-1)[0].config.params.service].token = data.token;
+        $rootScope[$rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config.params.service].token = data.token;
         //$window.alert("This is the end of the Token response");
       },function(errorMessage) {
         $log.info(errorMessage);
@@ -95,12 +97,12 @@
   * and broadcasts 'event:angular-auth-loginRequired'.
   */
   .config(['$httpProvider','$resourceProvider','$injector', function($httpProvider,$resourceProvider,$injector) {    
-    $httpProvider.interceptors.push(['$rootScope', '$q', '$window','$log','applicationResources', function($rootScope, $q, $window, $log,applicationResources) {
+    $httpProvider.interceptors.push(['$rootScope', '$q', '$window','$log','UsfCAStokenAuthConstant', function($rootScope, $q, $window, $log, UsfCAStokenAuthConstant) {
       
       var getApplicationResourceKey = function(url) {
         var keepGoing = true;
         var appkey = "";
-        angular.forEach(applicationResources,function(value, key) {
+        angular.forEach(UsfCAStokenAuthConstant.applicationResources,function(value, key) {
           if (keepGoing) {
             if (url === value) {
               appkey = key;
@@ -136,7 +138,7 @@
             //var params = rejection.config.params;
             // Passing the tokenService URL into the config data to be added to the buffer
             rejection.config.data = rejection.data;
-            $rootScope.tokenAuth.buffer.push({
+            $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.push({
               config: rejection.config,
               deferred: deferred
             });
@@ -171,8 +173,8 @@
                 }
               }.removeLogin(rejection.data.tokenService.substring(0,rejection.data.tokenService.indexOf("?")))
             },function(value, key) {
-              $rootScope.tokenAuth.applicationResources[appKey][key] = value;
-              // $window.alert(JSON.stringify($rootScope.tokenAuth.applicationResources[appKey]));
+              $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey][key] = value;
+              // $window.alert(JSON.stringify($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]));
             });
             $rootScope.$broadcast('event:auth-loginRequired');
             return deferred.promise;
@@ -189,14 +191,14 @@
       };
     }]);
   }])
-  .run(['$rootScope', '$log', '$window', 'storage','tokenAuth','applicationResources', function($rootScope, $log, $window, storage, tokenAuth,applicationResources) {
+  .run(['$rootScope', '$log', '$window', 'storage','tokenAuth', 'UsfCAStokenAuthConstant', function($rootScope, $log, $window, storage, tokenAuth, UsfCAStokenAuthConstant) {
     tokenAuth.initializeStorage();
-    if ($rootScope.tokenAuth.buffer.length) {
+    if ($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length) {
       // Get the last 401 config in the buffer
-      var config = $rootScope.tokenAuth.buffer.slice(-1)[0].config;      
+      var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config;      
       // Get the applicationResource object
       var appKey = tokenAuth.getApplicationResourceKey(config.url);
-      if ('appId' in $rootScope.tokenAuth.applicationResources[appKey] && 'tokenService' in $rootScope.tokenAuth.applicationResources[appKey] && !('token' in $rootScope.tokenAuth.applicationResources[appKey])) {        
+      if ('appId' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey] && 'tokenService' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey] && !('token' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey])) {        
         tokenAuth.requestToken(appKey).then(function(data) {
           //$window.alert("This is the Token response");
           //$window.alert(JSON.stringify(data));
@@ -204,8 +206,8 @@
             $log.info({ tokenobj: tokenobj });  
           });
           $log.info({ requestTokenData: data });          
-          $rootScope.tokenAuth.applicationResources[appKey].token = data.token;
-          $rootScope.tokenAuth.buffer.pop();
+          $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
+          $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
           // $window.location.reload();
           //$window.alert("This is the end of the Token response");
         },function(errorMessage) {
