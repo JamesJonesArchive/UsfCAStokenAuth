@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-1d - 2014-06-26 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-1f - 2014-06-27 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function (window, angular, undefined) {
@@ -183,8 +183,7 @@
             return deferred.promise;
           } else {
             // This is where 302 redirect errors are
-            $log.info(rejection);
-            $window.alert("Rejection status is " + rejection.status);
+            $log.info({"Rejection" : rejection});
             
             return deferred.promise;
           }
