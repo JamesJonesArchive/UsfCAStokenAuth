@@ -5,7 +5,7 @@ USF Service for CAS backed Token Authentication
 
 ## Installing via Bower
 ```
-bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.1-1
+bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.1-1h
 ```
 
 ## Angular Version
@@ -48,3 +48,18 @@ an example with a service defined as "exampleResource" and it's service URL:
 This will produce a local storage binding to track tokens and their corresponding token servers with
 this defined service. Of course, when you define your 'own' services, you can reference this URL conviently
 while passing it into the function as 'applicationResources'.
+
+## Handling CORS
+
+CORS has already been activated by the plugin. You can override this in $http or $resource. This is necessary
+to access the Token Server across domains, at least. Here's the settings in the plugin's config section:
+
+```
+    $resourceProvider.defaults.stripTrailingSlashes = false;
+    $httpProvider.defaults.useXDomain = true;
+    $httpProvider.defaults.withCredentials = true;
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+```
+
+One thing to notice is the delete of the header "X-Requested-With" at the end. This will bypass "Preflight"
+with an "Options" request.
