@@ -7,6 +7,11 @@
   .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$q','$log','$cookieStore','$cookies','$resource','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$q,$log,$cookieStore,$cookies,$resource,UsfCAStokenAuthConstant) {
     // Service logic
     // ...
+    var transformRequestAsFormPost = function(data, getHeaders) {
+      var headers = getHeaders();
+      headers[ "Content-type" ] = "application/x-www-form-urlencoded; charset=utf-8";
+      return( $.param(data) );
+    };
     var service = {
       initializeStorage: function() {
         var defaultValue = {};
@@ -33,11 +38,7 @@
         });
         return appkey;
       },
-      transformRequestAsFormPost: function(data, getHeaders) {
-        var headers = getHeaders();
-        headers[ "Content-type" ] = "application/x-www-form-urlencoded; charset=utf-8";
-        return( $.param(data) );
-      },
+      transformRequestAsFormPost: transformRequestAsFormPost,
       requestToken: function(appKey) {
         // Get the last 401 config in the buffer
         // var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config;
@@ -49,7 +50,6 @@
         // params: { "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId },
         // $window.alert("Cors problem 302");
         $log.info({ cookies: $cookies });
-        var transformRequestAsFormPost = this.transformRequestAsFormPost;
         return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",{},{
           'getToken': { method: 'POST', responseType: "json", withCredentials: true,
             headers: {

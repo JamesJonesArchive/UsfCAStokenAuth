@@ -1,9 +1,9 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-1g - 2014-06-27 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-1j - 2014-07-02 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
- */(function (window, angular, undefined) {
+ */(function ($, window, angular, undefined) {
   'use strict';
 
   angular.module('UsfCAStokenAuth',[
@@ -12,6 +12,11 @@
   .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$q','$log','$cookieStore','$cookies','$resource','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$q,$log,$cookieStore,$cookies,$resource,UsfCAStokenAuthConstant) {
     // Service logic
     // ...
+    var transformRequestAsFormPost = function(data, getHeaders) {
+      var headers = getHeaders();
+      headers[ "Content-type" ] = "application/x-www-form-urlencoded; charset=utf-8";
+      return( $.param(data) );
+    };
     var service = {
       initializeStorage: function() {
         var defaultValue = {};
@@ -38,6 +43,7 @@
         });
         return appkey;
       },
+      transformRequestAsFormPost: transformRequestAsFormPost,
       requestToken: function(appKey) {
         // Get the last 401 config in the buffer
         // var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config;
@@ -54,8 +60,10 @@
             headers: {
               "Content-Type": "application/json",
               "Accept": "application/json"
-            }
+            },
+            transformRequest: transformRequestAsFormPost
           }
+          
           //  ,
           //  transformRequest: function(data, headersGetter) {
           //    var str = [];
@@ -101,7 +109,18 @@
   * On 401 response (without 'ignoreAuthModule' option) stores the request
   * and broadcasts 'event:angular-auth-loginRequired'.
   */
-  .config(['$httpProvider','$resourceProvider','$injector', function($httpProvider,$resourceProvider,$injector) {    
+  .config(['$httpProvider','$resourceProvider','$injector', function($httpProvider,$resourceProvider,$injector) {
+    /**
+     * Application will have to use CORS for interacting with the
+     * CAS Token Service, at least. These settings do just that
+     */
+    $resourceProvider.defaults.stripTrailingSlashes = false;
+    $httpProvider.defaults.useXDomain = true;
+    $httpProvider.defaults.withCredentials = true;
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    /**
+     * This is the interceptor needed to handle response errors
+     */
     $httpProvider.interceptors.push(['$rootScope', '$q', '$window','$log','UsfCAStokenAuthConstant', function($rootScope, $q, $window, $log, UsfCAStokenAuthConstant) {
       
       var getApplicationResourceKey = function(url) {
@@ -224,4 +243,4 @@
       }      
     }
   }]);
-})(window, window.angular);
+})(jQuery, window, window.angular);
