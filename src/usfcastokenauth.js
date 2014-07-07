@@ -53,7 +53,7 @@
         return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",{},{
           'getToken': { method: 'GET', responseType: "json", withCredentials: true,
             params: {
-              "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId
+              "service": decodeURIComponent($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId)
             }
             //headers: {
             //  // "Content-Type": "application/json",
