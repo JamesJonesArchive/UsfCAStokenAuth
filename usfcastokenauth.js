@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-1m - 2014-07-07 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-1n - 2014-07-07 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -58,7 +58,7 @@
         return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",{},{
           'getToken': { method: 'GET', responseType: "json", withCredentials: true,
             params: {
-              "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId
+              "service": decodeURIComponent($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId)
             }
             //headers: {
             //  // "Content-Type": "application/json",
