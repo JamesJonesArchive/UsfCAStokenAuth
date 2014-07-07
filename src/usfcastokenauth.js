@@ -51,21 +51,21 @@
         // $window.alert("Cors problem 302");
         $log.info({ cookies: $cookies });
         return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",{},{
-          'getToken': { method: 'POST', responseType: "json", withCredentials: true,
-            //params: {
-            //  "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId
-            //},
+          'getToken': { method: 'GET', responseType: "json", withCredentials: true,
+            params: {
+              "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId
+            }
             //headers: {
             //  // "Content-Type": "application/json",
             //  "Content-Type": "text/plain",
             //  "Accept": "application/json"
             //},
             //transformRequest: transformRequestAsFormPost
-            transformRequest: function(data, headersGetter) {
-              // var headers = headersGetter();
-              // headers[ "Content-type" ] = "text/plain; charset=utf-8";
-              return JSON.stringify(data);
-            }
+            //transformRequest: function(data, headersGetter) {
+            //  // var headers = headersGetter();
+            //  // headers[ "Content-type" ] = "text/plain; charset=utf-8";
+            //  return JSON.stringify(data);
+            //}
           }
           
           //  ,
@@ -85,9 +85,9 @@
           //    return data;
           //  }
           //}
-        }).getToken({ "service": encodeURI($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId) }).$promise;
+        // }).getToken({ "service": encodeURI($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId) }).$promise;
         // }).getToken(JSON.stringify({ "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId })).$promise;
-        // }).getToken().$promise;
+        }).getToken().$promise;
       }
     };
     $rootScope.$on('event:auth-loginRequired', function() {
