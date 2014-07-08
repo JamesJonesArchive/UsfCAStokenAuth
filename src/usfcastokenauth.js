@@ -53,13 +53,14 @@
         var deferred = $q.defer();
         $http({
           method: 'POST',
-          url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",
+          // url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",
+          url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request?service=" + encodeURIComponent($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId),
           withCredentials: true,
           responseType: "json",
           headers: {
             "Content-Type": "application/json"
-          },
-          data: {'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId}
+          }
+          // data: {'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId}
           //transformRequest: function(data, headersGetter) {
           //  var str = [];
           //  var headers = headersGetter();
