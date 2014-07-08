@@ -55,7 +55,18 @@
           method: 'POST',
           url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",
           withCredentials: true,
-          data: {'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId}
+          data: JSON.stringify({'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId})
+          //transformRequest: function(data, headersGetter) {
+          //  var str = [];
+          //  var headers = headersGetter();
+          //  headers[ "Content-type" ] = "application/x-www-form-urlencoded; charset=utf-8";
+          //  for(var p in data) {
+          //    if (data.hasOwnProperty(p)){
+          //      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(data[p]));              
+          //    }
+          //  }
+          //  return str.join("&");
+          //}
         }).success(function(response) {
           deferred.resolve(response);
         }).error(function(){
