@@ -262,9 +262,9 @@
         tokenAuth.requestToken(appKey).then(function(data) {
           //$window.alert("This is the Token response");
           //$window.alert(JSON.stringify(data));
-          data.$promise.then(function(tokenobj) {
-            $log.info({ tokenobj: tokenobj });  
-          });
+          //data.$promise.then(function(tokenobj) {
+          //  $log.info({ tokenobj: tokenobj });  
+          //});
           $log.info({ requestTokenData: data });          
           $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
           $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
