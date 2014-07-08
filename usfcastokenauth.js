@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-1o - 2014-07-07 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-1p - 2014-07-08 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -9,7 +9,7 @@
   angular.module('UsfCAStokenAuth',[
     'angularLocalStorage'
   ])
-  .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$q','$log','$cookieStore','$cookies','$resource','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$q,$log,$cookieStore,$cookies,$resource,UsfCAStokenAuthConstant) {
+  .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$q','$log','$cookieStore','$cookies','$resource','$http','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$q,$log,$cookieStore,$cookies,$resource,$http,UsfCAStokenAuthConstant) {
     // Service logic
     // ...
     var transformRequestAsFormPost = function(data, getHeaders) {
@@ -55,44 +55,59 @@
         // params: { "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId },
         // $window.alert("Cors problem 302");
         $log.info({ cookies: $cookies });
-        return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",{},{
-          'getToken': { method: 'GET', responseType: "json", withCredentials: true,
-            params: {
-              "service": encodeURIComponent($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId)
-            }
-            //headers: {
-            //  // "Content-Type": "application/json",
-            //  "Content-Type": "text/plain",
-            //  "Accept": "application/json"
-            //},
-            //transformRequest: transformRequestAsFormPost
-            //transformRequest: function(data, headersGetter) {
-            //  // var headers = headersGetter();
-            //  // headers[ "Content-type" ] = "text/plain; charset=utf-8";
-            //  return JSON.stringify(data);
-            //}
-          }
-          
-          //  ,
-          //  transformRequest: function(data, headersGetter) {
-          //    var str = [];
-          //    var headers = headersGetter();
-          //    headers[ "Content-type" ] = "application/x-www-form-urlencoded; charset=utf-8";
-          //    for(var p in data) {
-          //      if (data.hasOwnProperty(p)){
-          //        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(data[p]));              
-          //      }
-          //    }
-          //    return str.join("&");
-          //  },
-          //  transformResponse: function(data, headersGetter) {
-          //    $log.info(data);
-          //    return data;
-          //  }
-          //}
-        // }).getToken({ "service": encodeURI($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId) }).$promise;
-        // }).getToken(JSON.stringify({ "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId })).$promise;
-        }).getToken().$promise;
+        var deferred = $q.defer();
+        $http({
+          method: 'POST',
+          url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",
+          withCredentials: true,
+          data: {'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId}
+        }).success(function(response) {
+          deferred.resolve(response);
+        }).error(function(){
+          deferred.reject('ERROR');
+        });
+        //Returning the promise object
+        return deferred.promise;
+        
+        // return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",{},{
+        //return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request?service=" + encodeURIComponent($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId),{},{
+        //  'getToken': { method: 'GET', responseType: "json", withCredentials: true
+        //    //params: {
+        //    //  "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId
+        //    //}
+        //    //headers: {
+        //    //  // "Content-Type": "application/json",
+        //    //  "Content-Type": "text/plain",
+        //    //  "Accept": "application/json"
+        //    //},
+        //    //transformRequest: transformRequestAsFormPost
+        //    //transformRequest: function(data, headersGetter) {
+        //    //  // var headers = headersGetter();
+        //    //  // headers[ "Content-type" ] = "text/plain; charset=utf-8";
+        //    //  return JSON.stringify(data);
+        //    //}
+        //  }
+        //  
+        //  //  ,
+        //  //  transformRequest: function(data, headersGetter) {
+        //  //    var str = [];
+        //  //    var headers = headersGetter();
+        //  //    headers[ "Content-type" ] = "application/x-www-form-urlencoded; charset=utf-8";
+        //  //    for(var p in data) {
+        //  //      if (data.hasOwnProperty(p)){
+        //  //        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(data[p]));              
+        //  //      }
+        //  //    }
+        //  //    return str.join("&");
+        //  //  },
+        //  //  transformResponse: function(data, headersGetter) {
+        //  //    $log.info(data);
+        //  //    return data;
+        //  //  }
+        //  //}
+        //// }).getToken({ "service": encodeURI($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId) }).$promise;
+        //// }).getToken(JSON.stringify({ "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId })).$promise;
+        //}).getToken().$promise;
       }
     };
     $rootScope.$on('event:auth-loginRequired', function() {
