@@ -55,7 +55,11 @@
           method: 'POST',
           url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",
           withCredentials: true,
-          data: JSON.stringify({'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId})
+          responseType: "json",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          data: {'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId}
           //transformRequest: function(data, headersGetter) {
           //  var str = [];
           //  var headers = headersGetter();
