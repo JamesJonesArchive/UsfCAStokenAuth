@@ -152,7 +152,10 @@
      * Application will have to use CORS for interacting with the
      * CAS Token Service, at least. These settings do just that
      */
-    $resourceProvider.defaults.stripTrailingSlashes = false;
+    if ('defaults' in $resourceProvider) {
+      // Only supported in 1.3.x
+      $resourceProvider.defaults.stripTrailingSlashes = false;
+    }
     $httpProvider.defaults.useXDomain = true;
     $httpProvider.defaults.withCredentials = true;
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
