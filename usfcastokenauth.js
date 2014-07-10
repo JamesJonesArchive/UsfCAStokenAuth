@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-1x - 2014-07-09 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-1y - 2014-07-10 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -157,7 +157,10 @@
      * Application will have to use CORS for interacting with the
      * CAS Token Service, at least. These settings do just that
      */
-    $resourceProvider.defaults.stripTrailingSlashes = false;
+    if ('defaults' in $resourceProvider) {
+      // Only supported in 1.3.x
+      $resourceProvider.defaults.stripTrailingSlashes = false;
+    }
     $httpProvider.defaults.useXDomain = true;
     $httpProvider.defaults.withCredentials = true;
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
