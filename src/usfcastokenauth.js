@@ -56,11 +56,17 @@
           url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",
           // url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request?service=" + encodeURIComponent($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId),
           withCredentials: true,
-          responseType: "json",
+          responseType: "text",
           headers: {
             "Content-Type": "application/json"
           },
-          data: {'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId}
+          data: {'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId},
+          transformResponse: function(data, headersGetter) {
+            var headers = headersGetter();
+            $log.info(headers);
+            $log.info({transformedResponse: data});
+            return { token: data };
+          }
           // data: {'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId}
           //transformRequest: function(data, headersGetter) {
           //  var str = [];
