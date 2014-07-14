@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-2a - 2014-07-11 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-2b - 2014-07-14 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -44,6 +44,13 @@
         return appkey;
       },
       transformRequestAsFormPost: transformRequestAsFormPost,
+      getStoredToken: function(appKey) {
+        if ('token' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {
+          // Return the stored token
+          return $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token;
+        }
+        return null;
+      },
       requestToken: function(appKey) {
         // Get the last 401 config in the buffer
         // var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config;
@@ -158,7 +165,7 @@
   * On 401 response (without 'ignoreAuthModule' option) stores the request
   * and broadcasts 'event:angular-auth-loginRequired'.
   */
-  .config(['$httpProvider','$resourceProvider','$injector', function($httpProvider,$resourceProvider,$injector) {
+  .config(['$httpProvider','$resourceProvider','$injector','UsfCAStokenAuthConstant', function($httpProvider,$resourceProvider,$injector,UsfCAStokenAuthConstant) {
     /**
      * Application will have to use CORS for interacting with the
      * CAS Token Service, at least. These settings do just that
@@ -170,6 +177,17 @@
     $httpProvider.defaults.useXDomain = true;
     $httpProvider.defaults.withCredentials = true;
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    //$httpProvider.defaults.transformRequest.push(function(data, getHeaders) {
+    //  var $rootScope = $injector.get('$rootScope');
+    //  var headers = getHeaders();
+    //  if (typeof appKey !== 'undefined') {
+    //    if ('token' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {
+    //      // Return the stored token in the header
+    //      headers[ 'X-Auth-Token' ] = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token;
+    //    }
+    //  }
+    //  return data;
+    //});
     /**
      * This is the interceptor needed to handle response errors
      */
