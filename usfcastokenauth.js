@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-2b - 2014-07-14 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-2c - 2014-07-14 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -165,7 +165,7 @@
   * On 401 response (without 'ignoreAuthModule' option) stores the request
   * and broadcasts 'event:angular-auth-loginRequired'.
   */
-  .config(['$httpProvider','$resourceProvider','$injector','UsfCAStokenAuthConstant', function($httpProvider,$resourceProvider,$injector,UsfCAStokenAuthConstant) {
+  .config(['$httpProvider','$resourceProvider','$injector', function($httpProvider,$resourceProvider,$injector) {
     /**
      * Application will have to use CORS for interacting with the
      * CAS Token Service, at least. These settings do just that
