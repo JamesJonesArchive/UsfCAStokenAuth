@@ -160,7 +160,7 @@
   * On 401 response (without 'ignoreAuthModule' option) stores the request
   * and broadcasts 'event:angular-auth-loginRequired'.
   */
-  .config(['$httpProvider','$resourceProvider','$injector','UsfCAStokenAuthConstant', function($httpProvider,$resourceProvider,$injector,UsfCAStokenAuthConstant) {
+  .config(['$httpProvider','$resourceProvider','$injector', function($httpProvider,$resourceProvider,$injector) {
     /**
      * Application will have to use CORS for interacting with the
      * CAS Token Service, at least. These settings do just that
