@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-2f - 2014-07-15 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-2g - 2014-07-15 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -133,14 +133,9 @@
     });
     $rootScope.$on('event:auth-tokenRequired',function() {
       service.requestToken().then(function(data) {
-        //$window.alert("This is the Token response");
-        //$window.alert(JSON.stringify(data));
         $rootScope[$rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config.params.service].token = data.token;
-        //$window.alert("This is the end of the Token response");
       },function(errorMessage) {
         $log.info(errorMessage);
-        //$window.alert("This is the Token error response");
-        //$window.alert(errorMessage);
       });
     });    
     return service;
@@ -166,7 +161,7 @@
      * This is the interceptor needed to handle response errors
      */
     $httpProvider.interceptors.push(['$rootScope', '$q', '$window','$log','UsfCAStokenAuthConstant', function($rootScope, $q, $window, $log, UsfCAStokenAuthConstant) {
-      
+      // Function for getting the resourceKey by url
       var getApplicationResourceKey = function(url) {
         var keepGoing = true;
         var appkey = "";
@@ -180,14 +175,14 @@
         });
         return appkey;
       };
-      
+      // The interceptor methods
       return {      
         request: function(config) {
           return config || $q.when(config);
         },
         requestError: function(rejection) {
-          $log.info(rejection); // Contains the data about the error on the request.
-          
+          // Contains the data about the error on the request.
+          $log.info(rejection); 
           // Return the promise rejection.
           return $q.reject(rejection);
         },
@@ -198,12 +193,7 @@
         responseError: function(rejection) {
           $log.info(rejection); // Contains the data about the error on the response.
           var deferred = $q.defer();
-          // if (rejection.status === 401 && !rejection.config.ignoreAuthModule) {
-          // alert(JSON.stringify(rejection.config));
           if (rejection.status === 401 && !rejection.config.ignoreAuthModule) {
-            // $window.alert(rejection.config.url);
-            //var url = rejection.config.url;
-            //var params = rejection.config.params;
             // Passing the tokenService URL into the config data to be added to the buffer
             rejection.config.data = rejection.data;
             $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.push({
@@ -213,16 +203,13 @@
             var params = {
               getParams: function(queryString) {                                    
                 var params = {}, queries, temp, i, l;
-            
                 // Split into key/value pairs
                 queries = queryString.split("&");
-            
                 // Convert the array of strings into an object
                 for ( i = 0, l = queries.length; i < l; i++ ) {
                   temp = queries[i].split('=');
                   params[temp[0]] = decodeURIComponent(temp[1]);
                 }
-            
                 return params;                                                                        
               }
             }.getParams(rejection.data.tokenService.substring( rejection.data.tokenService.indexOf('?') + 1 ));
@@ -242,14 +229,12 @@
               }.removeLogin(rejection.data.tokenService.substring(0,rejection.data.tokenService.indexOf("?")))
             },function(value, key) {
               $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey][key] = value;
-              // $window.alert(JSON.stringify($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]));
             });
             $rootScope.$broadcast('event:auth-loginRequired');
             return deferred.promise;
           } else {
             // This is where 302 redirect errors are
-            $log.info({"Rejection" : rejection});
-            
+            $log.info({"Rejection" : rejection});            
             return deferred.promise;
           }
           // otherwise, default behaviour
@@ -263,27 +248,14 @@
     tokenAuth.initializeStorage();
     var tokenProcessing = {
       error: function(errorMessage) {
-        $window.alert("Cors problem 302");
+        // $window.alert("Cors problem 302");
         $log.info(errorMessage);
-        //$window.alert("This is the Token error response");
-        //$window.alert(errorMessage);
       },
       tokenHandler: function(data) {
-        //$window.alert("This is the Token response");
-        //$window.alert(JSON.stringify(data));
-        //data.$promise.then(function(tokenobj) {
-        //  $log.info({ tokenobj: tokenobj });  
-        //});
         $log.info({ requestTokenData: data });          
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
-        // $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
-        // $window.location.reload();
-        $window.alert("New Length of buffer is "+$rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length);
-        //$window.alert("This is the end of the Token response");
       }
     };
-    // {var i=num; while(i--) log(i);}
-    //for (var i = 0; i < $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length; i++) {
     for (var i=$rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length-1; i >=0; i--) {
       // Get the last 401 config in the buffer
       var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer[i].config;
@@ -296,17 +268,5 @@
     while($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length > 0) {
       $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
     }
-    
-    //while ($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length > 0) {
-    //  // Get the last 401 config in the buffer
-    //  var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config;      
-    //  // Get the applicationResource object
-    //  var appKey = tokenAuth.getApplicationResourceKey(config.url);
-    //  if ('appId' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey] && 'tokenService' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {        
-    //    tokenAuth.requestToken(appKey).then(tokenProcessing.tokenHandler,tokenProcessing.error);
-    //  } else {
-    //    $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
-    //  }     
-    //}
   }]);
 })(jQuery, window, window.angular);
