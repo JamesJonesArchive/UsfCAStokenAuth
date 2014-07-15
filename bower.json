@@ -1,6 +1,6 @@
 {
   "name": "usfcastokenauth",
-  "version": "0.0.1-2d",
+  "version": "0.0.1-2e",
   "description": "USF Service for CAS backed Token Authentication",
   "repository": {
     "type": "git",
