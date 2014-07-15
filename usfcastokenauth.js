@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-2e - 2014-07-15 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-2f - 2014-07-15 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -276,22 +276,37 @@
         //});
         $log.info({ requestTokenData: data });          
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
-        $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
+        // $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
         // $window.location.reload();
         $window.alert("New Length of buffer is "+$rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length);
         //$window.alert("This is the end of the Token response");
       }
     };
-    while ($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length > 0) {
+    // {var i=num; while(i--) log(i);}
+    //for (var i = 0; i < $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length; i++) {
+    for (var i=$rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length-1; i >=0; i--) {
       // Get the last 401 config in the buffer
-      var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config;      
+      var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer[i].config;
       // Get the applicationResource object
       var appKey = tokenAuth.getApplicationResourceKey(config.url);
       if ('appId' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey] && 'tokenService' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {        
         tokenAuth.requestToken(appKey).then(tokenProcessing.tokenHandler,tokenProcessing.error);
-      } else {
-        $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
       }     
     }
+    while($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length > 0) {
+      $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
+    }
+    
+    //while ($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length > 0) {
+    //  // Get the last 401 config in the buffer
+    //  var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config;      
+    //  // Get the applicationResource object
+    //  var appKey = tokenAuth.getApplicationResourceKey(config.url);
+    //  if ('appId' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey] && 'tokenService' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {        
+    //    tokenAuth.requestToken(appKey).then(tokenProcessing.tokenHandler,tokenProcessing.error);
+    //  } else {
+    //    $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
+    //  }     
+    //}
   }]);
 })(jQuery, window, window.angular);
