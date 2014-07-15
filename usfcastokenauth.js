@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-2d - 2014-07-15 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-2e - 2014-07-15 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -278,10 +278,11 @@
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
         // $window.location.reload();
+        $window.alert("New Length of buffer is "+$rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length);
         //$window.alert("This is the end of the Token response");
       }
     };
-    while ($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length) {
+    while ($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length > 0) {
       // Get the last 401 config in the buffer
       var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config;      
       // Get the applicationResource object

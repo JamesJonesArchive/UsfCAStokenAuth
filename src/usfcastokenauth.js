@@ -273,10 +273,11 @@
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
         // $window.location.reload();
+        $window.alert("New Length of buffer is "+$rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length);
         //$window.alert("This is the end of the Token response");
       }
     };
-    while ($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length) {
+    while ($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length > 0) {
       // Get the last 401 config in the buffer
       var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config;      
       // Get the applicationResource object
