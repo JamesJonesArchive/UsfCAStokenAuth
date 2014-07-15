@@ -55,7 +55,10 @@ CORS has already been activated by the plugin. You can override this in $http or
 to access the Token Server across domains, at least. Here's the settings in the plugin's config section:
 
 ```
-    $resourceProvider.defaults.stripTrailingSlashes = false;
+    if ('defaults' in $resourceProvider) {
+      // Only supported in 1.3.x
+      $resourceProvider.defaults.stripTrailingSlashes = false;
+    }
     $httpProvider.defaults.useXDomain = true;
     $httpProvider.defaults.withCredentials = true;
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
