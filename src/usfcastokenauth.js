@@ -191,7 +191,9 @@
         this.push(appKey);
       }
     },appKeys);
+    $log.info({'appKeys': appKeys});
     for (var appKey in appKeys) {
+      
       if ('appId' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey] && 'tokenService' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {        
         tokenAuth.requestToken(appKey).then(tokenProcessing.tokenHandler,tokenProcessing.error);
       } 
