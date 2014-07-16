@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-2g - 2014-07-15 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-2h - 2014-07-16 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -59,31 +59,41 @@
         // params: { "service": $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId },
         // $window.alert("Cors problem 302");
         $log.info({ cookies: $cookies });
-        var deferred = $q.defer();
-        $http({
-          method: 'POST',
-          url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",
-          // url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request?service=" + encodeURIComponent($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId),
-          withCredentials: true,
-          responseType: "text",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          data: {'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId},
-          transformResponse: function(data, headersGetter) {
+        
+        //var deferred = $q.defer();
+        //$http({
+        //  method: 'POST',
+        //  url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",
+        //  // url: $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request?service=" + encodeURIComponent($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId),
+        //  withCredentials: true,
+        //  responseType: "text",
+        //  headers: {
+        //    "Content-Type": "application/json"
+        //  },
+        //  data: {'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId},
+        //  transformResponse: function(data, headersGetter) {
+        //    var headers = headersGetter();
+        //    $log.info(headers);
+        //    $log.info({transformedResponse: data});
+        //    return { token: data };
+        //  }
+        //}).success(function(response) {
+        //  deferred.resolve(response);
+        //}).error(function(){
+        //  deferred.reject('ERROR');
+        //});
+        //Returning the promise object
+        //return deferred.promise;
+        
+        return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",{},{
+          'getToken': { method: 'POST', withCredentials: true, responseType: "text",  headers: { "Content-Type": "application/json"}, transformResponse: function(data, headersGetter) {
             var headers = headersGetter();
             $log.info(headers);
             $log.info({transformedResponse: data});
             return { token: data };
-          }
-        }).success(function(response) {
-          deferred.resolve(response);
-        }).error(function(){
-          deferred.reject('ERROR');
-        });
-        //Returning the promise object
-        return deferred.promise;
-        
+          } }
+        }).getToken({'service': $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId}).$promise;
+      
         // return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",{},{
         //return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request?service=" + encodeURIComponent($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].appId),{},{
         //  'getToken': { method: 'GET', responseType: "json", withCredentials: true
