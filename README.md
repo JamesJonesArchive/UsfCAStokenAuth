@@ -40,7 +40,7 @@ an example with a service defined as "exampleResource" and it's service URL:
 .constant('UsfCAStokenAuthConstant',{
     'applicationUniqueId': 'f6765e988eb32cbda5dcd9ee2673c0a8',
     'applicationResources': {
-        'exampleResource': 'https://dev.it.usf.edu/~james/ExampleApp/services.php'
+        'exampleResource': 'https://somecompany.com/~jdoe/ExampleApp/services.php'
     }
 })
 ```
@@ -66,3 +66,36 @@ to access the Token Server across domains, at least. Here's the settings in the 
 
 One thing to notice is the delete of the header "X-Requested-With" at the end. This will bypass "Preflight"
 with an "Options" request.
+
+## Usage
+
+Your service URL's are stored in the constant so you can easily refer to them by the applicationResource 'key'
+using a function from this plugin. You'll need to inject the 'tokenAuth' service into your service or controller
+similar to:
+
+```
+angular.module('angCorstokenApp')
+    .factory('exampleService',['$resource','tokenAuth', function ($resource,tokenAuth) {      
+      var ExampleResource = $resource(tokenAuth.getResourceUrl('exampleResource'),{},{
+          'list': {
+            method: 'POST', params: {'service': 'list'},responseType: 'json', headers: { 'X-Auth-Token': tokenAuth.getStoredToken('exampleResource') }
+          }
+      });
+  
+      // Public API here
+      return {
+        list: function () {
+          return ExampleResource.list({}).$promise;
+        }
+      };
+    }]); 
+```
+
+There's a few things going on here. For one, 'tokenAuth' (which is a reference to this plugin's service) is available to this factory and the URL for $resource is
+obtained by the 'tokenAuth.getResourceUrl' function by passing the applicationResources 'key' for the service you provided in the constant you wired up for the plugin.
+This is more of a convience function but it does allow you to keep all this together with the 'tokenAuth.getStoredToken' function which uses the same
+applicationResources 'key' to obtain a stored 'token' associated with the registered applicationResources 'key' you defined.
+
+In summary, for $resource (or $http), you'll need to inject the 'tokenAuth' service. Then use the 'tokenAuth.getResourceUrl' for the URL and add a headers config option
+using the 'tokenAuth.getStoredToken' function to pass in a token. The plugin handles the rest and stores your tokens and such. Make sure your application has a unique
+'applicationUniqueId' defined in your constant (this will keep your storage distinct from any other instances of applications using this plugin).

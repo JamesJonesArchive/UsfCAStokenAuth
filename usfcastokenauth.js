@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-2k - 2014-07-16 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-2l - 2014-07-17 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -187,36 +187,16 @@
         $log.info({ requestTokenData: data });          
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
       }
-    },
-    appKeys = [];
-    angular.forEach($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer,function(obj,index) {
-      // Get the applicationResource key from the config url in the buffer object
-      var appKey = tokenAuth.getApplicationResourceKey(obj.config.url);
-      if(this.indexOf(appKey) == -1) {
-        this.push(appKey);
-      }
-    },appKeys);
-    $log.info({'appKeys': appKeys});
-    //for (var appKey in appKeys) {      
-    //  if ('appId' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey] && 'tokenService' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {        
-    //    tokenAuth.requestToken(appKey).then(tokenProcessing.tokenHandler,tokenProcessing.error);
-    //  } 
-    //}
-    for(var i=appKeys.length; i >=0; i--) {
-      var appKey = appKeys[i];
+    };
+    for (var i=$rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length-1; i >=0; i--) {
+      // Get the last 401 config in the buffer
+      var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer[i].config;
+      // Get the applicationResource object
+      var appKey = tokenAuth.getApplicationResourceKey(config.url);
       if ('appId' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey] && 'tokenService' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {        
         tokenAuth.requestToken(appKey).then(tokenProcessing.tokenHandler,tokenProcessing.error);
-      }       
+      }     
     }
-    //for (var i=$rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length-1; i >=0; i--) {
-    //  // Get the last 401 config in the buffer
-    //  var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer[i].config;
-    //  // Get the applicationResource object
-    //  var appKey = tokenAuth.getApplicationResourceKey(config.url);
-    //  if ('appId' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey] && 'tokenService' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {        
-    //    tokenAuth.requestToken(appKey).then(tokenProcessing.tokenHandler,tokenProcessing.error);
-    //  }     
-    //}
     while($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length > 0) {
       $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
     }
