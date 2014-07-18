@@ -5,12 +5,11 @@ USF Service for CAS backed Token Authentication
 
 ## Installing via Bower
 ```
-bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.1-1h
+bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.1-2m
 ```
 ## Angular Version
 
-Currently, this plugin is using Angular 1.3.0-beta.10 which has improvements
-needed for angular $resource.
+Currently, this plugin is using Angular 1.2.19.
 
 ## Including the module
 
