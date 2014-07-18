@@ -96,6 +96,23 @@ obtained by the 'tokenAuth.getResourceUrl' function by passing the applicationRe
 This is more of a convience function but it does allow you to keep all this together with the 'tokenAuth.getStoredToken' function which uses the same
 applicationResources 'key' to obtain a stored 'token' associated with the registered applicationResources 'key' you defined.
 
-In summary, for $resource (or $http), you'll need to inject the 'tokenAuth' service. Then use the 'tokenAuth.getResourceUrl' for the URL and add a headers config option
-using the 'tokenAuth.getStoredToken' function to pass in a token. The plugin handles the rest and stores your tokens and such. Make sure your application has a unique
-'applicationUniqueId' defined in your constant (this will keep your storage distinct from any other instances of applications using this plugin).
+In summary, for $resource (or $http), you'll need to inject the 'tokenAuth' service into your service or controller. Then use the 'tokenAuth.getResourceUrl' for the URL
+and add a headers config option using the 'tokenAuth.getStoredToken' function to pass in a token. The plugin handles the rest and stores your tokens and such.
+Make sure your application has a unique 'applicationUniqueId' defined in your constant (this will keep your storage distinct from any other instances of applications using this plugin).
+
+## Bypassing this auth module
+
+If you have a http or resource service you want bypassed by this modules handling you can pass 'ignoreAuthModule' with a value of 'true' into the $http or $resource config. That may look something like:
+
+```
+    $http({method: 'GET', url: '/someUrl', ignoreAuthModule: true }).
+        success(function(data, status, headers, config) {
+          // this callback will be called asynchronously
+          // when the response is available
+        }).
+        error(function(data, status, headers, config) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
+        });
+
+```
