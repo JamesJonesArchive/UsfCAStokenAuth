@@ -1,12 +1,13 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-2m - 2014-07-18 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-2n - 2014-07-23 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
   'use strict';
 
   angular.module('UsfCAStokenAuth',[
+    'ngRoute',
     'angularLocalStorage'
   ])
   .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$q','$log','$cookieStore','$cookies','$resource','$http','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$q,$log,$cookieStore,$cookies,$resource,$http,UsfCAStokenAuthConstant) {
@@ -103,7 +104,7 @@
     /**
      * This is the interceptor needed to handle response errors
      */
-    $httpProvider.interceptors.push(['$rootScope', '$q', '$window','$log','UsfCAStokenAuthConstant', function($rootScope, $q, $window, $log, UsfCAStokenAuthConstant) {
+    $httpProvider.interceptors.push(['$rootScope', '$q', '$window','$location','$log','UsfCAStokenAuthConstant', function($rootScope, $q, $window, $location, $log, UsfCAStokenAuthConstant) {
       // Function for getting the resourceKey by url
       var getApplicationResourceKey = function(url) {
         var keepGoing = true;
@@ -139,43 +140,50 @@
           if (rejection.status === 401 && !rejection.config.ignoreAuthModule) {
             // Passing the tokenService URL into the config data to be added to the buffer
             rejection.config.data = rejection.data;
-            $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.push({
-              config: rejection.config,
-              deferred: deferred
-            });
-            // Gets the list of passed parameters as a hash
-            var params = {
-              getParams: function(queryString) {                                    
-                var params = {}, queries, temp, i, l;
-                // Split into key/value pairs
-                queries = queryString.split("&");
-                // Convert the array of strings into an object
-                for ( i = 0, l = queries.length; i < l; i++ ) {
-                  temp = queries[i].split('=');
-                  params[temp[0]] = decodeURIComponent(temp[1]);
+            if ('authorizedError' in rejection.data) {
+              // The role is not authorized
+              $rootScope.authorizedError = rejection.data.authorizedError;
+              $rootScope.unauthorizedRole = rejection.data.role;
+              $location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
+            } else {
+              $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.push({
+                config: rejection.config,
+                deferred: deferred
+              });
+              // Gets the list of passed parameters as a hash
+              var params = {
+                getParams: function(queryString) {                                    
+                  var params = {}, queries, temp, i, l;
+                  // Split into key/value pairs
+                  queries = queryString.split("&");
+                  // Convert the array of strings into an object
+                  for ( i = 0, l = queries.length; i < l; i++ ) {
+                    temp = queries[i].split('=');
+                    params[temp[0]] = decodeURIComponent(temp[1]);
+                  }
+                  return params;                                                                        
                 }
-                return params;                                                                        
-              }
-            }.getParams(rejection.data.tokenService.substring( rejection.data.tokenService.indexOf('?') + 1 ));
-            var appKey = getApplicationResourceKey(rejection.config.url);
-            // Populates local storage with the appId and the tokenService URL
-            angular.forEach({
-              "appId": params.service, 
-              "tokenService": {
-                removeLogin: function(url) {
-                  var lastSlashIndex = url.lastIndexOf("/");
-                  if (lastSlashIndex > url.indexOf("/") + 1) { // if not in http://
-                    return url.substr(0, lastSlashIndex); // cut it off
-                  } else {
-                    return url;
-                  }                                    
-                }
-              }.removeLogin(rejection.data.tokenService.substring(0,rejection.data.tokenService.indexOf("?")))
-            },function(value, key) {
-              $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey][key] = value;
-            });
-            // Triggers the redirect to login
-            $rootScope.$broadcast('event:auth-loginRequired');
+              }.getParams(rejection.data.tokenService.substring( rejection.data.tokenService.indexOf('?') + 1 ));
+              var appKey = getApplicationResourceKey(rejection.config.url);
+              // Populates local storage with the appId and the tokenService URL
+              angular.forEach({
+                "appId": params.service, 
+                "tokenService": {
+                  removeLogin: function(url) {
+                    var lastSlashIndex = url.lastIndexOf("/");
+                    if (lastSlashIndex > url.indexOf("/") + 1) { // if not in http://
+                      return url.substr(0, lastSlashIndex); // cut it off
+                    } else {
+                      return url;
+                    }                                    
+                  }
+                }.removeLogin(rejection.data.tokenService.substring(0,rejection.data.tokenService.indexOf("?")))
+              },function(value, key) {
+                $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey][key] = value;
+              });
+              // Triggers the redirect to login
+              $rootScope.$broadcast('event:auth-loginRequired');              
+            }
             return deferred.promise;
           } else {
             // This is where 302 redirect errors are
