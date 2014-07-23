@@ -5,7 +5,7 @@ USF Service for CAS backed Token Authentication
 
 ## Installing via Bower
 ```
-bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.1-2m
+bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.1-2n
 ```
 ## Angular Version
 
@@ -40,13 +40,28 @@ an example with a service defined as "exampleResource" and it's service URL:
     'applicationUniqueId': 'f6765e988eb32cbda5dcd9ee2673c0a8',
     'applicationResources': {
         'exampleResource': 'https://somecompany.com/~jdoe/ExampleApp/services.php'
-    }
+    },
+    'unauthorizedRoute': '/unauthorized'
 })
 ```
 
 This will produce a local storage binding to track tokens and their corresponding token servers with
 this defined service. Of course, when you define your 'own' services, you can reference this URL conviently
 while passing it into the function as 'applicationResources'.
+
+## Handling Unauthorized Requests
+
+You may find the certain requests are not authorized. You need to wire this to a view to let the end user know.
+In the example constants above, the 'unauthorizedRoute' is defined as 'unauthorized'. That means you'll need
+to create a route for it and wire it into your routes.
+
+In Yeoman, you can do that by typing:
+
+```
+yo angular:route unauthorized
+```
+
+
 
 ## Handling CORS
 
