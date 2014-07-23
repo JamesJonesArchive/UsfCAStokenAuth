@@ -5,7 +5,7 @@ USF Service for CAS backed Token Authentication
 
 ## Installing via Bower
 ```
-bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.1-2n
+bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.1-2o
 ```
 ## Angular Version
 
@@ -61,7 +61,9 @@ In Yeoman, you can do that by typing:
 yo angular:route unauthorized
 ```
 
-
+You'll need to edit your view and anything you want in the controller it creates. Before the redirect,
+'authorizedError' and 'unauthorizedRole' will be updated in the $rootScope so you can access it
+in the view and such (if desired).
 
 ## Handling CORS
 
