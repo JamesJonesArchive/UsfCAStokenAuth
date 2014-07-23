@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-2n - 2014-07-23 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-2o - 2014-07-23 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -82,6 +82,10 @@
       // $window.alert("Temporary Stop before the redirect to the tokenService!");
       $window.location.assign($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config.data.tokenService);
     });
+    // Handles the unauthorized redirect
+    $rootScope.$on('event:auth-unauthorizedRedirect', function() {
+      $window.location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
+    });
     return service;
   }])
   /**
@@ -144,7 +148,8 @@
               // The role is not authorized
               $rootScope.authorizedError = rejection.data.authorizedError;
               $rootScope.unauthorizedRole = rejection.data.role;
-              $location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
+              // Triggers the redirect to unauthorized route
+              $rootScope.$broadcast('event:auth-unauthorizedRedirect');  
             } else {
               $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.push({
                 config: rejection.config,

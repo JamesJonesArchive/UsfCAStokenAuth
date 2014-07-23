@@ -77,6 +77,10 @@
       // $window.alert("Temporary Stop before the redirect to the tokenService!");
       $window.location.assign($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config.data.tokenService);
     });
+    // Handles the unauthorized redirect
+    $rootScope.$on('event:auth-unauthorizedRedirect', function() {
+      $window.location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
+    });
     return service;
   }])
   /**
@@ -139,7 +143,8 @@
               // The role is not authorized
               $rootScope.authorizedError = rejection.data.authorizedError;
               $rootScope.unauthorizedRole = rejection.data.role;
-              $location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
+              // Triggers the redirect to unauthorized route
+              $rootScope.$broadcast('event:auth-unauthorizedRedirect');  
             } else {
               $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.push({
                 config: rejection.config,
