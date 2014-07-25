@@ -42,7 +42,9 @@ module.exports = function(grunt) {
     uglify: {
       options: {
         banner: '<%= meta.banner %>',
-        mangle: false
+        mangle: {
+          except: ['UsfCAStokenAuthConstant']
+        }
       },
       dist: {
         src: ['<%= concat.dist.dest %>'],
