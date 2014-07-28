@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-2p - 2014-07-25 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-2q - 2014-07-28 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -19,6 +19,10 @@
         var defaultValue = {};
         defaultValue[UsfCAStokenAuthConstant.applicationUniqueId] = {buffer: [], applicationResources: {}};
         storage.bind($rootScope,'tokenAuth',{defaultValue: defaultValue});
+        if (!(UsfCAStokenAuthConstant.applicationUniqueId in $rootScope.tokenAuth)) {
+          // Add the key in case another instance of the plugin already has a different applicationUniqueID in local storage (prevent an 'undefined' error)
+          $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId] = defaultValue[UsfCAStokenAuthConstant.applicationUniqueId];
+        }
         angular.forEach(UsfCAStokenAuthConstant.applicationResources,function(value, key) {
           if (!(key in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources)) {
             $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[key] = {
@@ -212,8 +216,26 @@
       tokenHandler: function(data) {
         $log.info({ requestTokenData: data });          
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
-      }
+      },
+      promises: {}
     };
+    // Experimental Code
+    //angular.forEach($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer,function(buffer) {
+    //  // Get the last 401 config in the buffer
+    //  var config = buffer.config;
+    //  // Get the applicationResource object
+    //  var appKey = tokenAuth.getApplicationResourceKey(config.url);
+    //  tokenProcessing.promises[appKey] = tokenAuth.requestToken(appKey);
+    //},tokenProcessing.promises);
+    //$q.all(tokenProcessing.promises).then(function(results) {
+    //  angular.forEach(results,function(result,appKey) {
+    //    $log.info({ requestTokenData: result });          
+    //    $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = result.token;
+    //  });
+    //  while($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length > 0) {
+    //    $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
+    //  }
+    //});
     for (var i=$rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length-1; i >=0; i--) {
       // Get the last 401 config in the buffer
       var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer[i].config;
