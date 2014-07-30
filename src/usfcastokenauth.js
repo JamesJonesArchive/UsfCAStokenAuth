@@ -5,7 +5,7 @@
     'ngRoute',
     'angularLocalStorage'
   ])
-  .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$q','$log','$cookieStore','$cookies','$resource','$http','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$q,$log,$cookieStore,$cookies,$resource,$http,UsfCAStokenAuthConstant) {
+  .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$location','$q','$log','$cookieStore','$cookies','$resource','$http','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$location,$q,$log,$cookieStore,$cookies,$resource,$http,UsfCAStokenAuthConstant) {
     var service = {
       /**
        * Initializes local storage using the UsfCAStokenAuthConstant constant
@@ -85,7 +85,7 @@
     $rootScope.$on('event:auth-unauthorizedRedirect', function() {
       $window.alert("I've been triggered");
       $window.alert(UsfCAStokenAuthConstant.unauthorizedRoute);
-      $window.location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
+      $location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
     });
     return service;
   }])
