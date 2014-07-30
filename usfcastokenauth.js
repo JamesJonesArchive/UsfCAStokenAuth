@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.1-2q - 2014-07-28 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.1-2r - 2014-07-30 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -88,6 +88,8 @@
     });
     // Handles the unauthorized redirect
     $rootScope.$on('event:auth-unauthorizedRedirect', function() {
+      $window.alert("I've been triggered");
+      $window.alert(UsfCAStokenAuthConstant.unauthorizedRoute);
       $window.location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
     });
     return service;
