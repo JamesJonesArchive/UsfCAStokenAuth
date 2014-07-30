@@ -83,8 +83,6 @@
     });
     // Handles the unauthorized redirect
     $rootScope.$on('event:auth-unauthorizedRedirect', function() {
-      $window.alert("I've been triggered");
-      $window.alert(UsfCAStokenAuthConstant.unauthorizedRoute);
       $location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
     });
     return service;
