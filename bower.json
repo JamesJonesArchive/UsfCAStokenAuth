@@ -1,6 +1,6 @@
 {
   "name": "usfcastokenauth",
-  "version": "0.0.1-2s",
+  "version": "0.0.2",
   "description": "USF Service for CAS backed Token Authentication",
   "repository": {
     "type": "git",
@@ -15,12 +15,12 @@
     "node_modules"
   ],
   "dependencies": {
-    "angularLocalStorage": "~0.1.7",
+    "angularLocalStorage": "~0.2.0",
     "angular": "1.2.19",
     "json3": "~3.3.2",
-    "es5-shim": "~3.4.0",
-    "jquery": "~1.11.0",
-    "bootstrap-sass-official": "~3.1.1",
+    "es5-shim": "~4.0.5",
+    "jquery": "~2.1.1",
+    "bootstrap-sass-official": "~3.3.1",
     "angular-resource": "1.2.19",
     "angular-cookies": "1.2.19",
     "angular-sanitize": "1.2.19",
@@ -29,9 +29,5 @@
   "devDependencies": {
     "angular-mocks": "1.2.19",
     "angular-scenario": "1.2.19"
-  },
-  "resolutions": {
-    "angular": "1.2.19",
-    "angular-cookies": "1.2.19"
   }
 }
