@@ -3,6 +3,7 @@
 
   angular.module('UsfCAStokenAuth',[
     'ngRoute',
+    'ngResource',
     'angularLocalStorage'
   ])
   .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$location','$q','$log','$cookieStore','$cookies','$resource','$http','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$location,$q,$log,$cookieStore,$cookies,$resource,$http,UsfCAStokenAuthConstant) {
