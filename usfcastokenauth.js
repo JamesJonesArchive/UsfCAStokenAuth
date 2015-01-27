@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.2 - 2014-12-16 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.3 - 2015-01-27 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -8,6 +8,7 @@
 
   angular.module('UsfCAStokenAuth',[
     'ngRoute',
+    'ngResource',
     'angularLocalStorage'
   ])
   .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$location','$q','$log','$cookieStore','$cookies','$resource','$http','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$location,$q,$log,$cookieStore,$cookies,$resource,$http,UsfCAStokenAuthConstant) {
