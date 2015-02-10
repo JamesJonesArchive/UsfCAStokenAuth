@@ -5,7 +5,7 @@ USF Service for CAS backed Token Authentication
 
 ## Installing via Bower
 ```
-bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.6 --save
+bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.7 --save
 ```
 ## Angular Version
 
@@ -97,27 +97,51 @@ angular.module('angCorstokenApp')
     .factory('exampleService',['$resource','tokenAuth', function ($resource,tokenAuth) {      
       var ExampleResource = $resource(tokenAuth.getResourceUrl('exampleResource'),{},{
           'list': {
-            method: 'POST', params: {'service': 'list'},responseType: 'json', headers: { 'X-Auth-Token': tokenAuth.getStoredToken('exampleResource') }
+            method: 'POST', params: {'service': 'list'},responseType: 'json' }
+          },
+          'listAgain': {
+            method: 'POST', params: {'service': 'list'},responseType: 'json',appKey: 'exampleResource', url:'https://somecompany.com/~jdoe/ExampleApp/servicesOther.php' }
           }
       });
-  
+      var ExampleHttp1 = $http({ url: tokenAuth.getResourceUrl('exampleResource'), method: 'POST', params: {'service': 'list'},responseType: 'json' })
+      var ExampleHttp2 = $http({ url: 'https://somecompany.com/~jdoe/ExampleApp/services.php', method: 'POST', params: {'service': 'list'},responseType: 'json' })
+      var ExampleHttp3 = $http({ appKey: 'exampleResource', method: 'POST', params: {'service': 'list'},responseType: 'json' })
+      var ExampleHttp4 = $http({ url: 'https://somecompany.com/~jdoe/ExampleApp/servicesOther.php', appKey: 'exampleResource', method: 'POST', params: {'service': 'list'},responseType: 'json' })
       // Public API here
       return {
         list: function () {
           return ExampleResource.list({}).$promise;
+        },
+        exampleHttp1: function() {
+          return ExampleHttp1;
+        }
+        exampleHttp2: function() {
+          return ExampleHttp2;
+        }
+        exampleHttp3: function() {
+          return ExampleHttp3;
+        }
+        exampleHttp4: function() {
+          return ExampleHttp4;
         }
       };
     }]); 
 ```
 
-There's a few things going on here. For one, 'tokenAuth' (which is a reference to this plugin's service) is available to this factory and the URL for $resource is
-obtained by the 'tokenAuth.getResourceUrl' function by passing the applicationResources 'key' for the service you provided in the constant you wired up for the plugin.
-This is more of a convience function but it does allow you to keep all this together with the 'tokenAuth.getStoredToken' function which uses the same
-applicationResources 'key' to obtain a stored 'token' associated with the registered applicationResources 'key' you defined.
+There's a few things going on here. For one, 'tokenAuth' (which is a reference to this plugin's service) can be made available to this factory for accessing the 'getResourceUrl' function.
+In the 'list' method of 'ExampleResource' and 'ExampleHttp1' the URL for $resource and $http examples are obtained by the 'tokenAuth.getResourceUrl' function by passing the applicationResources 'key' for
+the service you provided in the constant you wired up for the plugin.
 
-In summary, for $resource (or $http), you'll need to inject the 'tokenAuth' service into your service or controller. Then use the 'tokenAuth.getResourceUrl' for the URL
-and add a headers config option using the 'tokenAuth.getStoredToken' function to pass in a token. The plugin handles the rest and stores your tokens and such.
-Make sure your application has a unique 'applicationUniqueId' defined in your constant (this will keep your storage distinct from any other instances of applications using this plugin).
+The 'ExampleHttp2' is using an explicit url _but_ that url matches the value of the 'exampleResource' key and will be handled by the plugin similarly to 'ExampleResource' and 'ExampleHttp1'.
+
+The 'ExampleHttp3' does not specify the URL but does specify an 'appKey'. The 'appKey' will be used to match the URL value and provide it to the $http service.
+
+The 'ExampleHttp4' is a hybrid. Specifying the 'appKey' associates it with the token associated with it. The URL can be something different you know shares that token but is a different url. This allows you to have URL variations associated with the same token.
+
+Finally, the 'listAgain' method of 'ExampleResource' uses the hybrid using both an explicit URL and 'appKey' associated with that token.
+
+In summary, for $resource (or $http), you'll need to inject the 'tokenAuth' service into your service or controller to use the convience method. Then you can use the 'tokenAuth.getResourceUrl' for the URL but you can use different combinations.
+The plugin handles the rest and stores your tokens and such. Make sure your application has a unique 'applicationUniqueId' defined in your constant (this will keep your storage distinct from any other instances of applications using this plugin).
 
 ## Bypassing this auth module
 
