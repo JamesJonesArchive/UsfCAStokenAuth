@@ -9,6 +9,12 @@
   .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$location','$q','$log','$cookieStore','$cookies','$resource','$http','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$location,$q,$log,$cookieStore,$cookies,$resource,$http,UsfCAStokenAuthConstant) {
     var service = {
       /**
+       * Checks to see if debug is turned on
+       */
+      isDebugEnabled: function() {
+        return ("debug" in UsfCAStokenAuthConstant)?(UsfCAStokenAuthConstant.debug === true):false;
+      },
+      /**
        * Initializes local storage using the UsfCAStokenAuthConstant constant
        */
       initializeStorage: function() {
@@ -31,6 +37,7 @@
        * Retrieves the Application resource 'key' from the UsfCAStokenAuthConstant using the URL as the matching value
        */
       getApplicationResourceKey: function(url) {
+        var self = this;
         var keepGoing = true;
         var appkey = "";
         angular.forEach(UsfCAStokenAuthConstant.applicationResources,function(value, key) {
@@ -41,6 +48,9 @@
             }
           }
         });
+        if(self.isDebugEnabled()) {
+          $log.info({matchedAppKey: appkey});
+        }
         return appkey;
       },
       /**
@@ -51,7 +61,7 @@
           // Return the stored token
           return $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token;
         }
-        return null;
+        return '';
       },
       /**
        * Retrieves a URL associated with a provided Application resource 'key'
@@ -63,12 +73,15 @@
        * Requests a 'token' from the token service referenced by the Application resource 'key'
        */
       requestToken: function(appKey) {
+        var self = this;
         return $resource($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].tokenService + "/request",{},{
           'getToken': { method: 'POST', withCredentials: true, responseType: "text",  headers: { "Content-Type": "application/json"},
             transformResponse: function(data, headersGetter) {
               var headers = headersGetter();
-              $log.info(headers);
-              $log.info({transformedResponse: data});
+              if(self.isDebugEnabled()) {
+                $log.info(headers);
+                $log.info({transformedResponse: data});
+              }
               return { token: data };
             }
           }
@@ -77,7 +90,9 @@
     };
     // Handles the login redirect
     $rootScope.$on('event:auth-loginRequired', function() {
-      $log.info($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config.data);
+      if(service.isDebugEnabled()) {
+        $log.info($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config.data);
+      }
       // Temporily comment until a token can be retrieved
       // $window.alert("Temporary Stop before the redirect to the tokenService!");
       $window.location.assign($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.slice(-1)[0].config.data.tokenService);
@@ -109,6 +124,10 @@
      * This is the interceptor needed to handle response errors
      */
     $httpProvider.interceptors.push(['$rootScope', '$q', '$window','$location','$log','UsfCAStokenAuthConstant', function($rootScope, $q, $window, $location, $log, UsfCAStokenAuthConstant) {
+      // Detects if debugging is enabled
+      var isDebugEnabled = function() {
+        return ("debug" in UsfCAStokenAuthConstant)?(UsfCAStokenAuthConstant.debug === true):false;
+      };
       // Function for getting the resourceKey by url
       var getApplicationResourceKey = function(url) {
         var keepGoing = true;
@@ -121,6 +140,9 @@
             }
           }
         });
+        if(isDebugEnabled()) {
+          $log.info({matchedAppKey: appkey});
+        }
         return appkey;
       };
       // The interceptor methods
@@ -129,8 +151,10 @@
           return config || $q.when(config);
         },
         requestError: function(rejection) {
-          // Contains the data about the error on the request.
-          $log.info(rejection); 
+          if (isDebugEnabled()) {
+            // Contains the data about the error on the request.
+            $log.info(rejection); 
+          }
           // Return the promise rejection.
           return $q.reject(rejection);
         },
@@ -139,7 +163,9 @@
           return response || $q.when(response);
         },                
         responseError: function(rejection) {
-          $log.info(rejection); // Contains the data about the error on the response.
+          if (isDebugEnabled()) {
+            $log.info(rejection); // Contains the data about the error on the response.
+          }
           var deferred = $q.defer();
           if (rejection.status === 401 && !rejection.config.ignoreAuthModule) {
             // Passing the tokenService URL into the config data to be added to the buffer
@@ -191,14 +217,15 @@
             }
             return deferred.promise;
           } else {
-            // This is where 302 redirect errors are
-            $log.info({"Rejection" : rejection});            
+            if (isDebugEnabled()) {
+              // This is where 302 redirect errors are
+              $log.info({"Rejection" : rejection});            
+            }
             return deferred.promise;
           }
           // otherwise, default behaviour
           return $q.reject(rejection);
-        }
-        
+        }        
       };
     }]);
   }])
@@ -207,10 +234,14 @@
     var tokenProcessing = {
       error: function(errorMessage) {
         // $window.alert("Cors problem 302");
-        $log.info(errorMessage);
+        if (tokenAuth.isDebugEnabled()) {
+          $log.info(errorMessage);
+        }
       },
       tokenHandler: function(data) {
-        $log.info({ requestTokenData: data });          
+        if (tokenAuth.isDebugEnabled()) {
+          $log.info({ requestTokenData: data });          
+        }
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
       },
       promises: {}
@@ -237,6 +268,9 @@
       var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer[i].config;
       // Get the applicationResource object
       var appKey = tokenAuth.getApplicationResourceKey(config.url);
+      if (tokenAuth.isDebugEnabled()) {
+        $log.info({"bufferIndex" : i, "config": config, "appKey": appKey});  
+      }
       if ('appId' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey] && 'tokenService' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {        
         tokenAuth.requestToken(appKey).then(tokenProcessing.tokenHandler,tokenProcessing.error);
       }     
