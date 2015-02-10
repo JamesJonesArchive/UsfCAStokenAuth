@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.6 - 2015-02-10 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.7 - 2015-02-10 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -150,9 +150,62 @@
         }
         return appkey;
       };
+      /**
+       * Retrieves a URL associated with a provided Application resource 'key'
+       */
+      var getResourceUrl = function(appKey) {
+        return UsfCAStokenAuthConstant.applicationResources[appKey];
+      };
+      /**
+       * Retrieves a stored token in local storage by the Application resource 'key'
+       */
+      var getStoredToken = function(appKey) {
+        if ('token' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {
+          // Return the stored token
+          return $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token;
+        }
+        return '';
+      };
       // The interceptor methods
       return {      
         request: function(config) {
+          if(!config.ignoreAuthModule) {
+            var token = '';
+            if ('appKey' in config) {
+              // If url is missing, pull it from the associated appKey
+              if (!('url' in config)) {
+                config.url = getResourceUrl(config.appKey);              
+              }
+              token = getStoredToken(config.appKey);
+              if (token.length > 1) {
+                // Add token to headers
+                if ('headers' in config) {
+                  if (!('X-Auth-Token' in config.headers)) {
+                    config.headers['X-Auth-Token'] = token;
+                  }
+                } else {
+                  config.headers = { 'X-Auth-Token': token };
+                }
+              }
+            } else if('url' in config) {
+              // Match the URL to an appKey
+              var appKey = getApplicationResourceKey(config.url);
+              if (appKey.length > 0) {
+                config.appKey = appKey;
+                token = getStoredToken(config.appKey);
+                if (token.length > 1) {
+                  // Add token to headers
+                  if ('headers' in config) {
+                    if (!('X-Auth-Token' in config.headers)) {
+                      config.headers['X-Auth-Token'] = token;
+                    }
+                  } else {
+                    config.headers = { 'X-Auth-Token': token };
+                  }
+                }                            
+              }
+            }
+          }
           return config || $q.when(config);
         },
         requestError: function(rejection) {
@@ -172,7 +225,7 @@
             $log.info(rejection); // Contains the data about the error on the response.
           }
           var deferred = $q.defer();
-          if (rejection.status === 401 && !rejection.config.ignoreAuthModule) {
+          if (rejection.status === 401 && !rejection.config.ignoreAuthModule && 'appKey' in rejection.config) {
             // Passing the tokenService URL into the config data to be added to the buffer
             rejection.config.data = rejection.data;
             if ('authorizedError' in rejection.data) {
@@ -200,7 +253,8 @@
                   return params;                                                                        
                 }
               }.getParams(rejection.data.tokenService.substring( rejection.data.tokenService.indexOf('?') + 1 ));
-              var appKey = getApplicationResourceKey(rejection.config.url);
+              // var appKey = getApplicationResourceKey(rejection.config.url);
+              var appKey = rejection.config.appKey;
               // Populates local storage with the appId and the tokenService URL
               angular.forEach({
                 "appId": params.service, 
