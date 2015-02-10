@@ -5,7 +5,7 @@ USF Service for CAS backed Token Authentication
 
 ## Installing via Bower
 ```
-bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.5 --save
+bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.6 --save
 ```
 ## Angular Version
 
@@ -41,13 +41,16 @@ an example with a service defined as "exampleResource" and it's service URL:
     'applicationResources': {
         'exampleResource': 'https://somecompany.com/~jdoe/ExampleApp/services.php'
     },
-    'unauthorizedRoute': '/unauthorized'
+    'unauthorizedRoute': '/unauthorized',
+    'debug': false
 })
 ```
 
 This will produce a local storage binding to track tokens and their corresponding token servers with
 this defined service. Of course, when you define your 'own' services, you can reference this URL conviently
 while passing it into the function as 'applicationResources'.
+
+Note: You can turn debugging on by setting the 'debug' key to true which will send debugging output to the console log
 
 ## Handling Unauthorized Requests
 
