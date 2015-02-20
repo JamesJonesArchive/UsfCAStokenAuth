@@ -185,7 +185,7 @@ The 'clearLocalStorage' method clears ALL local storage
 ```
 tokenAuth.getResourceUrl('myAppKey');
 ```
-The 'getResourceUrl' looks up the URL associated with the provided AppKey and returns it.
+The 'getResourceUrl' method looks up the URL associated with the provided AppKey and returns it.
 
 ```
 tokenAuth.isDebugEnabled();
