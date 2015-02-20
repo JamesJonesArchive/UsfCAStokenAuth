@@ -159,3 +159,35 @@ If you have a http or resource service you want bypassed by this modules handlin
         });
 
 ```
+
+## Extra convienence methods of the plugin
+
+```
+tokenAuth.clearToken('myAppKey');
+```
+The 'clearToken' method will clear the associated token connected to the provided appKey.
+
+```
+tokenAuth.clearTokens();
+```
+The 'clearTokens' method will clear all tokens on all appKeys.
+
+```
+tokenAuth.hasToken('myAppKey');
+```
+The 'hasToken' method will return 'true' or 'false' if a token is currently stored corresponding to the provided appKey.
+
+```
+tokenAuth.clearLocalStorage();
+```
+The 'clearLocalStorage' method clears ALL local storage
+
+```
+tokenAuth.getResourceUrl('myAppKey');
+```
+The 'getResourceUrl' looks up the URL associated with the provided AppKey and returns it.
+
+```
+tokenAuth.isDebugEnabled();
+```
+The 'isDebugEnabled' method checks to see if debugging is turned on in the constants declation for the plugin.

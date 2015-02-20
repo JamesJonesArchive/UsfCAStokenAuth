@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.7 - 2015-02-10 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.8 - 2015-02-20 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -73,6 +73,42 @@
        */
       getResourceUrl: function(appKey) {
         return UsfCAStokenAuthConstant.applicationResources[appKey];
+      },
+      /**
+       * Clears the associated token connected to the provided appKey
+       */
+      clearToken: function(appKey) {
+        if (appKey in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources) {
+          if ('token' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {
+            delete $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token;
+          }
+        }
+      },
+      /**
+       * Clears all tokens
+       */
+      clearTokens: function() {
+        angular.forEach($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources,function(value, appKey) {
+          if ('token' in value) {
+            delete $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token;
+          }
+        });
+      },
+      /**
+       * Clears all local storage
+       */
+      clearLocalStorage: function() {
+        storage.clearAll();
+      },
+      /**
+       * Returns true or false regarding if a token exists for this appKey in local storage
+       */
+      hasToken: function(appKey) {
+        if (appKey in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources) {
+          return ('token' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]);
+        } else {
+          return false;
+        }
       },
       /**
        * Requests a 'token' from the token service referenced by the Application resource 'key'

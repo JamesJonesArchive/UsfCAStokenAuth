@@ -70,6 +70,42 @@
         return UsfCAStokenAuthConstant.applicationResources[appKey];
       },
       /**
+       * Clears the associated token connected to the provided appKey
+       */
+      clearToken: function(appKey) {
+        if (appKey in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources) {
+          if ('token' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]) {
+            delete $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token;
+          }
+        }
+      },
+      /**
+       * Clears all tokens
+       */
+      clearTokens: function() {
+        angular.forEach($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources,function(value, appKey) {
+          if ('token' in value) {
+            delete $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token;
+          }
+        });
+      },
+      /**
+       * Clears all local storage
+       */
+      clearLocalStorage: function() {
+        storage.clearAll();
+      },
+      /**
+       * Returns true or false regarding if a token exists for this appKey in local storage
+       */
+      hasToken: function(appKey) {
+        if (appKey in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources) {
+          return ('token' in $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey]);
+        } else {
+          return false;
+        }
+      },
+      /**
        * Requests a 'token' from the token service referenced by the Application resource 'key'
        */
       requestToken: function(appKey) {
