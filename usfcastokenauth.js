@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.8 - 2015-02-20 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.9 - 2015-02-20 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -205,6 +205,9 @@
       // The interceptor methods
       return {      
         request: function(config) {
+          if (!('ignoreAuthModule' in config)) {
+            config.ignoreAuthModule = false;
+          }
           if(!config.ignoreAuthModule) {
             var token = '';
             if ('appKey' in config) {
@@ -362,7 +365,7 @@
       // Get the last 401 config in the buffer
       var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer[i].config;
       // Get the applicationResource object
-      var appKey = tokenAuth.getApplicationResourceKey(config.url);
+      var appKey = config.appKey;
       if (tokenAuth.isDebugEnabled()) {
         $log.info({"bufferIndex" : i, "config": config, "appKey": appKey});  
       }
