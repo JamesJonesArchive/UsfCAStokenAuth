@@ -200,6 +200,9 @@
       // The interceptor methods
       return {      
         request: function(config) {
+          if (!('ignoreAuthModule' in config)) {
+            config.ignoreAuthModule = false;
+          }
           if(!config.ignoreAuthModule) {
             var token = '';
             if ('appKey' in config) {
@@ -357,7 +360,7 @@
       // Get the last 401 config in the buffer
       var config = $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer[i].config;
       // Get the applicationResource object
-      var appKey = tokenAuth.getApplicationResourceKey(config.url);
+      var appKey = config.appKey;
       if (tokenAuth.isDebugEnabled()) {
         $log.info({"bufferIndex" : i, "config": config, "appKey": appKey});  
       }
