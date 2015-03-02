@@ -5,7 +5,7 @@ USF Service for CAS backed Token Authentication
 
 ## Installing via Bower
 ```
-bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.9 --save
+bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.10 --save
 ```
 ## Angular Version
 
@@ -160,6 +160,11 @@ If you have a http or resource service you want bypassed by this modules handlin
 
 ```
 
+## Handling the browser session
+
+The plugin creates a session cookie that will persist as long as the browser window is open. You can clear it using the 'tokenAuth.clearSessionCookie()' function. This will cause the application to clear out all tokens on reload
+which will make the user login again. This is useful to use on a "Logout" button as it will trigger the clearing of local storage tokens and begin a new session.
+
 ## Extra convienence methods of the plugin
 
 ```
@@ -181,6 +186,11 @@ The 'hasToken' method will return 'true' or 'false' if a token is currently stor
 tokenAuth.clearLocalStorage();
 ```
 The 'clearLocalStorage' method clears ALL local storage
+
+```
+tokenAuth.clearSessionCookie();
+```
+The 'clearSessionCookie' method clears out any existing session cookie
 
 ```
 tokenAuth.getResourceUrl('myAppKey');

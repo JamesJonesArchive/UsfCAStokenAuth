@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.9 - 2015-02-20 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.10 - 2015-03-02 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -9,6 +9,7 @@
   angular.module('UsfCAStokenAuth',[
     'ngRoute',
     'ngResource',
+    'ngCookies',
     'angularLocalStorage'
   ])
   .factory('tokenAuth', ['$rootScope','$injector','storage','$window','$location','$q','$log','$cookieStore','$cookies','$resource','$http','UsfCAStokenAuthConstant', function ($rootScope,$injector,storage,$window,$location,$q,$log,$cookieStore,$cookies,$resource,$http,UsfCAStokenAuthConstant) {
@@ -26,6 +27,14 @@
         var defaultValue = {};
         defaultValue[UsfCAStokenAuthConstant.applicationUniqueId] = {buffer: [], applicationResources: {}};
         storage.bind($rootScope,'tokenAuth',{defaultValue: defaultValue});
+        var sessionCookie = $cookieStore.get(UsfCAStokenAuthConstant.applicationUniqueId);
+        if (typeof sessionCookie === undefined) {
+          // Clear localstorage and ready a new session cookie
+          service.clearTokens();
+          $cookieStore.put(UsfCAStokenAuthConstant.applicationUniqueId,new Date().getTime());
+        } else if(service.isDebugEnabled()) {
+          $log.info({ cookieValue : sessionCookie, applicationId:  UsfCAStokenAuthConstant.applicationUniqueId });
+        }
         if (!(UsfCAStokenAuthConstant.applicationUniqueId in $rootScope.tokenAuth)) {
           // Add the key in case another instance of the plugin already has a different applicationUniqueID in local storage (prevent an 'undefined' error)
           $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId] = defaultValue[UsfCAStokenAuthConstant.applicationUniqueId];
@@ -99,6 +108,16 @@
        */
       clearLocalStorage: function() {
         storage.clearAll();
+      },
+      /**
+       * Removes the session cookie if it exists
+       */
+      clearSessionCookie: function() {
+        var sessionCookie = $cookieStore.get(UsfCAStokenAuthConstant.applicationUniqueId);
+        if (typeof sessionCookie !== undefined) {
+          // Removes session cookie
+          $cookieStore.remove(UsfCAStokenAuthConstant.applicationUniqueId);
+        }
       },
       /**
        * Returns true or false regarding if a token exists for this appKey in local storage
