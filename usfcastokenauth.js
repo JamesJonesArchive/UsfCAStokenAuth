@@ -28,7 +28,7 @@
         defaultValue[UsfCAStokenAuthConstant.applicationUniqueId] = {buffer: [], applicationResources: {}};
         storage.bind($rootScope,'tokenAuth',{defaultValue: defaultValue});
         var sessionCookie = $cookieStore.get(UsfCAStokenAuthConstant.applicationUniqueId);
-        if (typeof sessionCookie === undefined) {
+        if (typeof sessionCookie === "undefined") {
           // Clear localstorage and ready a new session cookie
           service.clearTokens();
           $cookieStore.put(UsfCAStokenAuthConstant.applicationUniqueId,new Date().getTime());
@@ -114,7 +114,7 @@
        */
       clearSessionCookie: function() {
         var sessionCookie = $cookieStore.get(UsfCAStokenAuthConstant.applicationUniqueId);
-        if (typeof sessionCookie !== undefined) {
+        if (typeof sessionCookie !== "undefined") {
           // Removes session cookie
           $cookieStore.remove(UsfCAStokenAuthConstant.applicationUniqueId);
         }
