@@ -27,7 +27,10 @@
           // Clear localstorage and ready a new session cookie
           service.clearTokens();
           $cookieStore.put(UsfCAStokenAuthConstant.applicationUniqueId,new Date().getTime());
-        } else if(service.isDebugEnabled()) {
+        }
+        if(service.isDebugEnabled()) {
+          // Log the sessionCookie
+          sessionCookie = $cookieStore.get(UsfCAStokenAuthConstant.applicationUniqueId);
           $log.info({ cookieValue : sessionCookie, applicationId:  UsfCAStokenAuthConstant.applicationUniqueId });
         }
         if (!(UsfCAStokenAuthConstant.applicationUniqueId in $rootScope.tokenAuth)) {
