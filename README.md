@@ -193,6 +193,11 @@ tokenAuth.clearSessionCookie();
 The 'clearSessionCookie' method clears out any existing session cookie
 
 ```
+tokenAuth.isLoggedIn();
+```
+The 'isLoggedIn' method return true or false on the global login condition based on the existence of the session cookie
+
+```
 tokenAuth.getResourceUrl('myAppKey');
 ```
 The 'getResourceUrl' method looks up the URL associated with the provided AppKey and returns it.
