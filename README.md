@@ -5,7 +5,7 @@ USF Service for CAS backed Token Authentication
 
 ## Installing via Bower
 ```
-bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.11 --save
+bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.12 --save
 ```
 ## Angular Version
 
@@ -191,6 +191,11 @@ The 'clearLocalStorage' method clears ALL local storage
 tokenAuth.clearSessionCookie();
 ```
 The 'clearSessionCookie' method clears out any existing session cookie
+
+```
+tokenAuth.isLoggedIn();
+```
+The 'isLoggedIn' method return true or false on the global login condition based on the existence of the session cookie
 
 ```
 tokenAuth.getResourceUrl('myAppKey');

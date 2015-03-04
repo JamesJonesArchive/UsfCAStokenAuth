@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.11 - 2015-03-03 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.12 - 2015-03-04 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -121,6 +121,13 @@
           // Removes session cookie
           $cookieStore.remove(UsfCAStokenAuthConstant.applicationUniqueId);
         }
+      },
+      /**
+       * Returns the global login state true or false based on the global session cookie
+       */
+      isLoggedIn: function() {
+        var sessionCookie = $cookieStore.get(UsfCAStokenAuthConstant.applicationUniqueId);
+        return (typeof sessionCookie !== "undefined");
       },
       /**
        * Returns true or false regarding if a token exists for this appKey in local storage

@@ -118,6 +118,13 @@
         }
       },
       /**
+       * Returns the global login state true or false based on the global session cookie
+       */
+      isLoggedIn: function() {
+        var sessionCookie = $cookieStore.get(UsfCAStokenAuthConstant.applicationUniqueId);
+        return (typeof sessionCookie !== "undefined");
+      },
+      /**
        * Returns true or false regarding if a token exists for this appKey in local storage
        */
       hasToken: function(appKey) {
