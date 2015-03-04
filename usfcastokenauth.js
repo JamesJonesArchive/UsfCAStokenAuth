@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.12 - 2015-03-04 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.14 - 2015-03-04 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -29,9 +29,8 @@
         storage.bind($rootScope,'tokenAuth',{defaultValue: defaultValue});
         var sessionCookie = $cookieStore.get(UsfCAStokenAuthConstant.applicationUniqueId);
         if (typeof sessionCookie === "undefined") {
-          // Clear localstorage and ready a new session cookie
+          // Clear localstorage when session cookie doesn't exist
           service.clearTokens();
-          $cookieStore.put(UsfCAStokenAuthConstant.applicationUniqueId,new Date().getTime());
         }
         if(service.isDebugEnabled()) {
           // Log the sessionCookie
@@ -356,7 +355,7 @@
       };
     }]);
   }])
-  .run(['$rootScope', '$log', '$window', 'storage','tokenAuth', 'UsfCAStokenAuthConstant', function($rootScope, $log, $window, storage, tokenAuth, UsfCAStokenAuthConstant) {
+  .run(['$rootScope', '$log', '$window', '$cookieStore', 'storage','tokenAuth', 'UsfCAStokenAuthConstant', function($rootScope, $log, $window, $cookieStore, storage, tokenAuth, UsfCAStokenAuthConstant) {
     tokenAuth.initializeStorage();
     var tokenProcessing = {
       error: function(errorMessage) {
@@ -370,6 +369,12 @@
           $log.info({ requestTokenData: data });          
         }
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
+        // User is now logged in so set the sessionCookie if it doesn't exist
+        var sessionCookie = $cookieStore.get(UsfCAStokenAuthConstant.applicationUniqueId);
+        if (typeof sessionCookie === "undefined") {
+          // Ready a new session cookie
+          $cookieStore.put(UsfCAStokenAuthConstant.applicationUniqueId,new Date().getTime());
+        }
       },
       promises: {}
     };
