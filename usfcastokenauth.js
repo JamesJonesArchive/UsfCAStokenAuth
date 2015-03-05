@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.14 - 2015-03-04 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.15 - 2015-03-05 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -119,6 +119,8 @@
         if (typeof sessionCookie !== "undefined") {
           // Removes session cookie
           $cookieStore.remove(UsfCAStokenAuthConstant.applicationUniqueId);
+          // Reload the page in the logged out state with the cookie not present
+          $window.location.reload();
         }
       },
       /**
@@ -368,12 +370,20 @@
         if (tokenAuth.isDebugEnabled()) {
           $log.info({ requestTokenData: data });          
         }
+        // Set the token in local storage
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
         // User is now logged in so set the sessionCookie if it doesn't exist
         var sessionCookie = $cookieStore.get(UsfCAStokenAuthConstant.applicationUniqueId);
         if (typeof sessionCookie === "undefined") {
           // Ready a new session cookie
           $cookieStore.put(UsfCAStokenAuthConstant.applicationUniqueId,new Date().getTime());
+          // In case this token request is still on the buffer, remove it
+          if($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length > 0) {
+            // Remove the last entry in the buffer
+            $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
+          }
+          // Reload the page in the logged in state with the cookie now present
+          $window.location.reload();
         }
       },
       promises: {}
