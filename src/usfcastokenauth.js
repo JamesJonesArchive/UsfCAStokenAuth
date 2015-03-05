@@ -114,6 +114,8 @@
         if (typeof sessionCookie !== "undefined") {
           // Removes session cookie
           $cookieStore.remove(UsfCAStokenAuthConstant.applicationUniqueId);
+          // Reload the page in the logged out state with the cookie not present
+          $window.location.reload();
         }
       },
       /**
@@ -363,12 +365,20 @@
         if (tokenAuth.isDebugEnabled()) {
           $log.info({ requestTokenData: data });          
         }
+        // Set the token in local storage
         $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources[appKey].token = data.token;
         // User is now logged in so set the sessionCookie if it doesn't exist
         var sessionCookie = $cookieStore.get(UsfCAStokenAuthConstant.applicationUniqueId);
         if (typeof sessionCookie === "undefined") {
           // Ready a new session cookie
           $cookieStore.put(UsfCAStokenAuthConstant.applicationUniqueId,new Date().getTime());
+          // In case this token request is still on the buffer, remove it
+          if($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.length > 0) {
+            // Remove the last entry in the buffer
+            $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
+          }
+          // Reload the page in the logged in state with the cookie now present
+          $window.location.reload();
         }
       },
       promises: {}
