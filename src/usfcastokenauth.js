@@ -126,7 +126,7 @@
           angular.forEach(tokenServices,function(value) {
             promises.push($http({method: 'GET', url: value + "/logout" }));
           });
-          $q.allSettled(promises).then(function(data){
+          $q.all(promises).then(function(data){
             $location.path(UsfCAStokenAuthConstant.logoutRoute);
           });
           // Reload the page in the logged out state with the cookie not present
