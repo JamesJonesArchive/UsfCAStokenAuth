@@ -114,8 +114,23 @@
         if (typeof sessionCookie !== "undefined") {
           // Removes session cookie
           $cookieStore.remove(UsfCAStokenAuthConstant.applicationUniqueId);
+          var promises = [];
+          var tokenServices = [];
+          angular.forEach($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources,function(value, appKey) {
+            if ('tokenService' in value) {
+              if (tokenServices.lastIndexOf(value.tokenService) >= 0) {
+                tokenServices.push(value.tokenService);
+              }              
+            }
+          });
+          angular.forEach(tokenServices,function(value) {
+            promises.push($http({method: 'GET', url: value + "/logout" }));
+          });
+          $q.allSettled(promises).then(function(data){
+            $location.path(UsfCAStokenAuthConstant.logoutRoute);
+          });
           // Reload the page in the logged out state with the cookie not present
-          $window.location.reload();
+          // $window.location.reload();
         }
       },
       /**
@@ -166,6 +181,10 @@
     // Handles the unauthorized redirect
     $rootScope.$on('event:auth-unauthorizedRedirect', function() {
       $location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
+    });
+    // Handles the logout and redirect to logout page
+    $rootScope.$on('event:tokenAuthLogout',function() {
+      service.clearSessionCookie();
     });
     return service;
   }])
@@ -383,6 +402,11 @@
       },
       promises: {}
     };
+    // Add the logout function in the root scope with the redirect to the logout rounte
+    $rootScope.tokenAuthLogout = function() {
+      // Triggers the redirect to logout
+      $rootScope.$broadcast('event:tokenAuthLogout');
+    };    
     // Experimental Code
     //angular.forEach($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer,function(buffer) {
     //  // Get the last 401 config in the buffer
