@@ -5,7 +5,7 @@ USF Service for CAS backed Token Authentication
 
 ## Installing via Bower
 ```
-bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.16 --save
+bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.17 --save
 ```
 ## Angular Version
 
@@ -126,13 +126,13 @@ angular.module('angCorstokenApp')
             method: 'POST', params: {'service': 'list'},responseType: 'json' }
           },
           'listAgain': {
-            method: 'POST', params: {'service': 'list'},responseType: 'json',appKey: 'exampleResource', url:'https://somecompany.com/~jdoe/ExampleApp/servicesOther.php' }
+            method: 'POST', params: {'service': 'list'},responseType: 'json',tokenKey: 'exampleResource', url:'https://somecompany.com/~jdoe/ExampleApp/servicesOther.php' }
           }
       });
       var ExampleHttp1 = $http({ url: tokenAuth.getResourceUrl('exampleResource'), method: 'POST', params: {'service': 'list'},responseType: 'json' })
       var ExampleHttp2 = $http({ url: 'https://somecompany.com/~jdoe/ExampleApp/services.php', method: 'POST', params: {'service': 'list'},responseType: 'json' })
-      var ExampleHttp3 = $http({ appKey: 'exampleResource', method: 'POST', params: {'service': 'list'},responseType: 'json' })
-      var ExampleHttp4 = $http({ url: 'https://somecompany.com/~jdoe/ExampleApp/servicesOther.php', appKey: 'exampleResource', method: 'POST', params: {'service': 'list'},responseType: 'json' })
+      var ExampleHttp3 = $http({ tokenKey: 'exampleResource', method: 'POST', params: {'service': 'list'},responseType: 'json' })
+      var ExampleHttp4 = $http({ url: 'https://somecompany.com/~jdoe/ExampleApp/servicesOther.php', tokenKey: 'exampleResource', method: 'POST', params: {'service': 'list'},responseType: 'json' })
       // Public API here
       return {
         list: function () {
@@ -160,11 +160,11 @@ the service you provided in the constant you wired up for the plugin.
 
 The 'ExampleHttp2' is using an explicit url _but_ that url matches the value of the 'exampleResource' key and will be handled by the plugin similarly to 'ExampleResource' and 'ExampleHttp1'.
 
-The 'ExampleHttp3' does not specify the URL but does specify an 'appKey'. The 'appKey' will be used to match the URL value and provide it to the $http service.
+The 'ExampleHttp3' does not specify the URL but does specify an 'tokenKey'. The 'tokenKey' will be used to match the URL value and provide it to the $http service.
 
-The 'ExampleHttp4' is a hybrid. Specifying the 'appKey' associates it with the token associated with it. The URL can be something different you know shares that token but is a different url. This allows you to have URL variations associated with the same token.
+The 'ExampleHttp4' is a hybrid. Specifying the 'tokenKey' associates it with the token associated with it. The URL can be something different you know shares that token but is a different url. This allows you to have URL variations associated with the same token.
 
-Finally, the 'listAgain' method of 'ExampleResource' uses the hybrid using both an explicit URL and 'appKey' associated with that token.
+Finally, the 'listAgain' method of 'ExampleResource' uses the hybrid using both an explicit URL and 'tokenKey' associated with that token.
 
 In summary, for $resource (or $http), you'll need to inject the 'tokenAuth' service into your service or controller to use the convience method. Then you can use the 'tokenAuth.getResourceUrl' for the URL but you can use different combinations.
 The plugin handles the rest and stores your tokens and such. Make sure your application has a unique 'applicationUniqueId' defined in your constant (this will keep your storage distinct from any other instances of applications using this plugin).
@@ -188,7 +188,7 @@ If you have a http or resource service you want bypassed by this modules handlin
 
 ## Handling the browser session
 
-The plugin creates a session cookie that will persist as long as the browser window is open. You can clear it using the 'tokenAuth.clearSessionCookie()' function. This will cause the application to clear out all tokens on reload
+The plugin creates a session cookie that will persist as long as the browser window is open. You can clear it using the 'tokenAuth.sessionLogout()' function. This will cause the application to clear out all tokens on reload
 which will make the user login again. This is useful to use on a "Logout" button as it will trigger the clearing of local storage tokens and begin a new session.
 
 ## Extra convienence methods of the plugin
@@ -196,17 +196,17 @@ which will make the user login again. This is useful to use on a "Logout" button
 ```
 tokenAuth.clearToken('myAppKey');
 ```
-The 'clearToken' method will clear the associated token connected to the provided appKey.
+The 'clearToken' method will clear the associated token connected to the provided tokenKey.
 
 ```
 tokenAuth.clearTokens();
 ```
-The 'clearTokens' method will clear all tokens on all appKeys.
+The 'clearTokens' method will clear all tokens on all tokenKeys.
 
 ```
 tokenAuth.hasToken('myAppKey');
 ```
-The 'hasToken' method will return 'true' or 'false' if a token is currently stored corresponding to the provided appKey.
+The 'hasToken' method will return 'true' or 'false' if a token is currently stored corresponding to the provided tokenKey.
 
 ```
 tokenAuth.clearLocalStorage();
@@ -214,9 +214,9 @@ tokenAuth.clearLocalStorage();
 The 'clearLocalStorage' method clears ALL local storage
 
 ```
-tokenAuth.clearSessionCookie();
+tokenAuth.sessionLogout();
 ```
-The 'clearSessionCookie' method clears out any existing session cookie
+The 'sessionLogout' method clears out any existing session cookie and does a logout on the token server
 
 ```
 tokenAuth.isLoggedIn();
