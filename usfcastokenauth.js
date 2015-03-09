@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.18 - 2015-03-09 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.19 - 2015-03-09 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -132,10 +132,22 @@
             $log.info({tokenServices: tokenServices});
           }
           angular.forEach(tokenServices,function(value) {
+            var logoutUrl = {
+              removeWebtoken: function(url) {
+                var lastSlashIndex = url.lastIndexOf("/");
+                if (lastSlashIndex > url.indexOf("/") + 1) { // if not in http://
+                  return url.substr(0, lastSlashIndex); // cut it off
+                } else {
+                  return url;
+                } 
+              }
+            }.removeWebToken(value) + "/logout";
             if(service.isDebugEnabled()) {
-              $log.info("Adding promise for: " + value + "/logout");
+              // $log.info("Adding promise for: " + value + "/logout");
+              $log.info("Adding promise for: " + logoutUrl);
             }
-            promises.push($http({method: 'GET', url: value + "/logout" }));
+            // promises.push($http({method: 'GET', url: value + "/logout" }));
+            promises.push($http({method: 'GET', url: logoutUrl }));
           });
           $q.all(promises).then(function(data){
             service.clearTokens();
