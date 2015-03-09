@@ -118,12 +118,18 @@
           var tokenServices = [];
           angular.forEach($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].applicationResources,function(value, tokenKey) {
             if ('tokenService' in value) {
-              if (tokenServices.lastIndexOf(value.tokenService) >= 0) {
+              if (tokenServices.indexOf(value.tokenService) == -1) {
                 tokenServices.push(value.tokenService);
-              }              
+              }
             }
           });
+          if(service.isDebugEnabled()) {
+            $log.info({tokenServices: tokenServices});
+          }
           angular.forEach(tokenServices,function(value) {
+            if(service.isDebugEnabled()) {
+              $log.info("Adding promise for: " + value + "/logout");
+            }
             promises.push($http({method: 'GET', url: value + "/logout" }));
           });
           $q.all(promises).then(function(data){
