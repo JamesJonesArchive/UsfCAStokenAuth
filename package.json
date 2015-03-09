@@ -1,6 +1,6 @@
 {
   "name": "usfcastokenauth",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "USF Service for CAS backed Token Authentication",
   "homepage": "https://github.com/jamjon3/UsfCAStokenAuth",
   "author": "James Jones <jamjon3@gmail.com>",

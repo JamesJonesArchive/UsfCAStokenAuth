@@ -128,7 +128,7 @@
           }
           angular.forEach(tokenServices,function(value) {
             var logoutUrl = {
-              removeWebtoken: function(url) {
+              getRootAuthTransfer: function(url) {
                 var lastSlashIndex = url.lastIndexOf("/");
                 if (lastSlashIndex > url.indexOf("/") + 1) { // if not in http://
                   return url.substr(0, lastSlashIndex); // cut it off
@@ -136,7 +136,7 @@
                   return url;
                 } 
               }
-            }.removeWebToken(value) + "/logout";
+            }.getRootAuthTransfer(value) + "/logout";
             if(service.isDebugEnabled()) {
               // $log.info("Adding promise for: " + value + "/logout");
               $log.info("Adding promise for: " + logoutUrl);
