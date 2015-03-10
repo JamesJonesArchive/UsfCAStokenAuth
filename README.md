@@ -5,7 +5,7 @@ USF Service for CAS backed Token Authentication
 
 ## Installing via Bower
 ```
-bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.20 --save
+bower install https://github.com/jamjon3/UsfCAStokenAuth.git#0.0.21 --save
 ```
 ## Angular Version
 
@@ -43,6 +43,7 @@ an example with a service defined as "exampleResource" and it's service URL:
     },
     'unauthorizedRoute': '/unauthorized',
     'logoutRoute': '/logout',
+    'loginRoute': '/login',
     'debug': false
 })
 ```
@@ -68,6 +69,35 @@ yo angular:route unauthorized
 You'll need to edit your view and anything you want in the controller it creates. Before the redirect,
 'authorizedError' and 'unauthorizedRole' will be updated in the $rootScope so you can access it
 in the view and such (if desired).
+
+## Handling Login Requests
+
+Optional: If you specify a 'loginRoute', you will be redirected to that route on your first login. In the
+example constants above, the 'loginRoute' is defined as 'login'. That means you'll need to create a route
+for it and wire it into your routes. Note: You can bypass using this and just allow the first tokenAuth
+protected service trigger a login (if you don't care to redirect to a route, it will simply refresh the current page).
+
+In Yeoman, you can do that by typing:
+
+```
+yo angular:route login
+```
+
+The plugin injects a function in the root scope you can access with a logout button called 'tokenAuthLogin'.
+This function needs to be called on clicking the button. That can look something like this in the code:
+
+```
+<button class="btn btn-sm" ng-click="tokenAuthLogin()">Login</button>
+```
+
+..or..
+
+```
+<a ng-href="" ng-click="tokenAuthLogin()">Login</a>
+```
+
+IMPORTANT: This function simply redirects to the route you specified. You're controller on that route will need to have
+a token protected function that will trigger the actual login.
 
 ## Handling Logout Requests
 
