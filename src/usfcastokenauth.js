@@ -149,7 +149,7 @@
             $location.path(UsfCAStokenAuthConstant.logoutRoute);
           });
           // Reload the page in the logged out state with the cookie not present
-          $window.location.reload();
+          // $window.location.reload();
         }
       },
       /**
@@ -211,7 +211,6 @@
       if ('loginRoute' in UsfCAStokenAuthConstant) {
         $location.path(UsfCAStokenAuthConstant.loginRoute);
       }
-      $window.location.reload();
     });
     return service;
   }])
@@ -398,7 +397,6 @@
       };
     }]);
   }])
-  .run(['$rootScope', '$log', '$window', '$cookieStore', 'storage','tokenAuth', 'UsfCAStokenAuthConstant', function($rootScope, $log, $window, $cookieStore, storage, tokenAuth, UsfCAStokenAuthConstant) {
     tokenAuth.initializeStorage();
     // Add the logout function in the root scope with the redirect to the logout rounte
     $rootScope.tokenAuthLogout = function() {
