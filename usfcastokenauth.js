@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.22 - 2015-03-11 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.23 - 2015-03-11 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -151,7 +151,7 @@
           });
           $q.all(promises).then(function(data){
             service.clearTokens();
-            $location.path(UsfCAStokenAuthConstant.logoutRoute);
+            $window.location.path(UsfCAStokenAuthConstant.logoutRoute);
           });
           // Reload the page in the logged out state with the cookie not present
           // $window.location.reload();
@@ -204,7 +204,7 @@
     });
     // Handles the unauthorized redirect
     $rootScope.$on('event:auth-unauthorizedRedirect', function() {
-      $location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
+      $window.location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
     });
     // Handles the logout and redirect to logout page
     $rootScope.$on('event:tokenAuthLogout',function() {
@@ -214,7 +214,7 @@
     $rootScope.$on('event:tokenAuthLogin',function() {
       // Reload the page or route in the logged in state with the cookie now present
       if ('loginRoute' in UsfCAStokenAuthConstant) {
-        $location.path(UsfCAStokenAuthConstant.loginRoute);
+        $window.location.path(UsfCAStokenAuthConstant.loginRoute);
       } else {
         $window.location.reload();
       }
@@ -415,7 +415,11 @@
     $rootScope.tokenAuthLogin = function() {
       // Triggers the redirect to logout
       $rootScope.$broadcast('event:tokenAuthLogin');
-    };    
+    };
+    $rootScope.isTokenAuth = function() {
+      // Returns the plugin state of the associated session cookie
+      return tokenAuth.isLoggedIn();
+    };
     var tokenProcessing = {
       error: function(errorMessage) {
         // $window.alert("Cors problem 302");
