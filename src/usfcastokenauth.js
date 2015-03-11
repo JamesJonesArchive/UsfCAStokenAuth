@@ -410,12 +410,19 @@
       if ('loginRoute' in UsfCAStokenAuthConstant) {
         matchingPaths.put(UsfCAStokenAuthConstant.loginRoute);
       }
+      if (tokenAuth.isDebugEnabled()) {
+        $log.info("$locationChangeStart interception");
+        $log.info({ nextPath: nextPath, matchingPaths: matchingPaths });  
+      }
       if (changeTo == changeFrom) {
         return;
       } else if (nextPath in matchingPaths) {
+        if (tokenAuth.isDebugEnabled()) {
+          $log.info("$locationChangeStart path matched on: " + nextPath);
+        }
         event.preventDefault();
-        window.location.assign(changeTo);
-        window.location.reload(true);
+        $window.location.assign(changeTo);
+        $window.location.reload(true);
       }
     });
     // Add the logout function in the root scope with the redirect to the logout rounte
