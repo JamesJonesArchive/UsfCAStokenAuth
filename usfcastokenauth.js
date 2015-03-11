@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.27 - 2015-03-11 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.28 - 2015-03-11 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -413,7 +413,7 @@
       var nextPath = $location.path();
       var matchingPaths = [ UsfCAStokenAuthConstant.logoutRoute ];
       if ('loginRoute' in UsfCAStokenAuthConstant) {
-        matchingPaths.put(UsfCAStokenAuthConstant.loginRoute);
+        matchingPaths.push(UsfCAStokenAuthConstant.loginRoute);
       }
       if (tokenAuth.isDebugEnabled()) {
         $log.info("$locationChangeStart interception");

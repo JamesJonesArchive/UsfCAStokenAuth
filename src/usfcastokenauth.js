@@ -408,7 +408,7 @@
       var nextPath = $location.path();
       var matchingPaths = [ UsfCAStokenAuthConstant.logoutRoute ];
       if ('loginRoute' in UsfCAStokenAuthConstant) {
-        matchingPaths.put(UsfCAStokenAuthConstant.loginRoute);
+        matchingPaths.push(UsfCAStokenAuthConstant.loginRoute);
       }
       if (tokenAuth.isDebugEnabled()) {
         $log.info("$locationChangeStart interception");
