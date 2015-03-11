@@ -146,10 +146,10 @@
           });
           $q.all(promises).then(function(data){
             service.clearTokens();
-            $window.location.path(UsfCAStokenAuthConstant.logoutRoute);
+            $location.path(UsfCAStokenAuthConstant.logoutRoute);
           });
           // Reload the page in the logged out state with the cookie not present
-          // $window.location.reload();
+          $window.location.reload();
         }
       },
       /**
@@ -199,7 +199,7 @@
     });
     // Handles the unauthorized redirect
     $rootScope.$on('event:auth-unauthorizedRedirect', function() {
-      $window.location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
+      $location.path(UsfCAStokenAuthConstant.unauthorizedRoute);
     });
     // Handles the logout and redirect to logout page
     $rootScope.$on('event:tokenAuthLogout',function() {
@@ -209,10 +209,9 @@
     $rootScope.$on('event:tokenAuthLogin',function() {
       // Reload the page or route in the logged in state with the cookie now present
       if ('loginRoute' in UsfCAStokenAuthConstant) {
-        $window.location.path(UsfCAStokenAuthConstant.loginRoute);
-      } else {
-        $window.location.reload();
+        $location.path(UsfCAStokenAuthConstant.loginRoute);
       }
+      $window.location.reload();
     });
     return service;
   }])
