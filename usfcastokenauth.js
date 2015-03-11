@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.28 - 2015-03-11 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.29 - 2015-03-11 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -427,7 +427,7 @@
         }
         event.preventDefault();
         $window.location.assign(changeTo);
-        $window.location.reload(true);
+        // $window.location.reload(true);
       }
     });
     // Add the logout function in the root scope with the redirect to the logout rounte

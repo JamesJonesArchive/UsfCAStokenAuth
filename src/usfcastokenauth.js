@@ -422,7 +422,7 @@
         }
         event.preventDefault();
         $window.location.assign(changeTo);
-        $window.location.reload(true);
+        // $window.location.reload(true);
       }
     });
     // Add the logout function in the root scope with the redirect to the logout rounte
