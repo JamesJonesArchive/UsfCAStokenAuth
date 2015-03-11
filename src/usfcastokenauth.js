@@ -401,6 +401,16 @@
   }])
   .run(['$rootScope', '$log', '$window', '$cookieStore', 'storage','tokenAuth', 'UsfCAStokenAuthConstant', function($rootScope, $log, $window, $cookieStore, storage, tokenAuth, UsfCAStokenAuthConstant) {
     tokenAuth.initializeStorage();
+    // Add the logout function in the root scope with the redirect to the logout rounte
+    $rootScope.tokenAuthLogout = function() {
+      // Triggers the redirect to logout
+      $rootScope.$broadcast('event:tokenAuthLogout');
+    };    
+    // Add the logout function in the root scope with the redirect to the logout rounte
+    $rootScope.tokenAuthLogin = function() {
+      // Triggers the redirect to logout
+      $rootScope.$broadcast('event:tokenAuthLogin');
+    };    
     var tokenProcessing = {
       error: function(errorMessage) {
         // $window.alert("Cors problem 302");
@@ -430,16 +440,6 @@
       },
       promises: {}
     };
-    // Add the logout function in the root scope with the redirect to the logout rounte
-    $rootScope.tokenAuthLogout = function() {
-      // Triggers the redirect to logout
-      $rootScope.$broadcast('event:tokenAuthLogout');
-    };    
-    // Add the logout function in the root scope with the redirect to the logout rounte
-    $rootScope.tokenAuthLogin = function() {
-      // Triggers the redirect to logout
-      $rootScope.$broadcast('event:tokenAuthLogin');
-    };    
     // Experimental Code
     //angular.forEach($rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer,function(buffer) {
     //  // Get the last 401 config in the buffer
