@@ -416,7 +416,7 @@
       }
       if (changeTo == changeFrom) {
         return;
-      } else if (nextPath in matchingPaths) {
+      } else if (matchingPaths.indexOf(nextPath) != -1) {
         if (tokenAuth.isDebugEnabled()) {
           $log.info("$locationChangeStart path matched on: " + nextPath);
         }

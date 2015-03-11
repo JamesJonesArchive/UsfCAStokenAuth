@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.26 - 2015-03-11 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.27 - 2015-03-11 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
  */(function ($, window, angular, undefined) {
@@ -421,7 +421,7 @@
       }
       if (changeTo == changeFrom) {
         return;
-      } else if (nextPath in matchingPaths) {
+      } else if (matchingPaths.indexOf(nextPath) != -1) {
         if (tokenAuth.isDebugEnabled()) {
           $log.info("$locationChangeStart path matched on: " + nextPath);
         }
