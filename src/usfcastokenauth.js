@@ -418,9 +418,9 @@
         return;
       } else if (matchingPaths.indexOf(nextPath) != -1) {
         if (tokenAuth.isDebugEnabled()) {
-          $log.info("$locationChangeStart path matched on: " + nextPath);
+          $log.info("$locationChangeStart path matched on: " + nextPath + " which is " + changeTo);
         }
-        event.preventDefault();
+        // event.preventDefault();
         $window.location.assign(changeTo);
         // $window.location.reload(true);
       }
