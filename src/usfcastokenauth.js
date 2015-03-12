@@ -412,8 +412,9 @@
       }
       if (tokenAuth.isDebugEnabled()) {
         $log.info("$locationChangeStart interception");
-        $log.info({ nextPath: nextPath, matchingPaths: matchingPaths });  
-      }
+        $log.info({ nextPath: nextPath, matchingPaths: matchingPaths });
+        $log.info({ authenticated: tokenAuth.isLoggedIn() });
+      }      
       if (changeTo == changeFrom) {
         return;
       } else if (matchingPaths.indexOf(nextPath) != -1) {
@@ -421,8 +422,14 @@
           $log.info("$locationChangeStart path matched on: " + nextPath + " which is " + changeTo);
         }
         // event.preventDefault();
-        $window.location.assign(changeTo);
+        $rootScope.$evalAsync(function () {
+          $window.location.assign(changeTo);
+        });
         // $window.location.reload(true);
+      //} else if (!tokenAuth.isLoggedIn() && ('loginRoute' in UsfCAStokenAuthConstant)?(UsfCAStokenAuthConstant.loginRoute !== nextPath):false) {
+      //  $rootScope.$evalAsync(function () {
+      //    $location.path(UsfCAStokenAuthConstant.loginRoute);
+      //  });
       }
     });
     // Add the logout function in the root scope with the redirect to the logout rounte
