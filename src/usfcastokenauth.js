@@ -1,4 +1,4 @@
-(function ($, window, angular, undefined) {
+(function (window, angular, undefined) {
   'use strict';
 
   angular.module('UsfCAStokenAuth',[
@@ -508,4 +508,4 @@
       $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
     }
   }]);
-})(jQuery, window, window.angular);
+})(window, window.angular);

@@ -1,9 +1,9 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v0.0.31 - 2015-03-12 * @link https://github.com/jamjon3/UsfCAStokenAuth
+ * @version v0.0.32 - 2015-04-06 * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html
- */(function ($, window, angular, undefined) {
+ */(function (window, angular, undefined) {
   'use strict';
 
   angular.module('UsfCAStokenAuth',[
@@ -513,4 +513,4 @@
       $rootScope.tokenAuth[UsfCAStokenAuthConstant.applicationUniqueId].buffer.pop();
     }
   }]);
-})(jQuery, window, window.angular);
+})(window, window.angular);
