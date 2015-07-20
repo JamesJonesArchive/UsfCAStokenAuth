@@ -391,7 +391,7 @@
               // This is where 302 redirect errors are
               $log.info({"Rejection" : rejection});            
             }
-            return deferred.promise;
+            return $q.reject(rejection);
           }
           // otherwise, default behaviour
           return $q.reject(rejection);
