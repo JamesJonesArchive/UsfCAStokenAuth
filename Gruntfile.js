@@ -1,125 +1,121 @@
-module.exports = function(grunt) {
-  'use strict';
+module.exports = function (grunt) {
+    'use strict';
 
-  // Project configuration.
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
-    meta: {
-      banner: [
+    // Load the grunt tasks
+    require('load-grunt-tasks')(grunt);
+
+    // Time the grunt tasks
+    require('time-grunt')(grunt);
+
+    // Project configuration.
+    grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
+        meta: {
+            banner: [
                 '/**',
                 ' * <%= pkg.description %>',
-                ' * @version v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>' +
+                ' * @version v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>',
                 ' * @link <%= pkg.homepage %>',
                 ' * @author <%= pkg.author %>',
-                ' * @license Lesser GPL License, http://www.gnu.org/licenses/lgpl.html',
+                ' * @license Apache 2.0 License, https://opensource.org/licenses/Apache-2.0',
                 ' */'
-              ].join('\n')
-    },
-    dirs: {
-      // dest: 'dist'
-      dest: '.'
-    },
-    concat: {
-      options: {
-        banner: '<%= meta.banner %>'
-      },
-      dist: {
-        src: ['src/*.js'],
-        // dest: 'usfcastokenauth.js'
-        dest: '<%= dirs.dest %>/<%= pkg.name %>.js'
-      }
-    },
-    zip: {
-      '<%= dirs.dest %>/<%= pkg.name %>.zip': [
-        '<%= dirs.dest %>/<%= pkg.name %>.js',
-        '<%= dirs.dest %>/<%= pkg.name %>.min.js'
-      ]
-    },
-    bowerInstall: {
-        install: {
+            ].join('\n')
+        },
+        dirs: {
+            dest: 'dist',
+            coverage: 'coverage'
+        }, 
+        concat: {
+            options: {
+                banner: '<%= meta.banner %>' + '\n' +
+                        '(function ( window, angular, undefined ) {' + '\n',
+                footer: '\n})( window, window.angular );'
+            },
+            dist: {
+                src: ['src/tokenAuthService.js','src/generateLogoutURL.js','src/queryStringParams.js','src/filterTokenRequestBuffer.js','src/tokenAuthInterceptor.js','src/tokenAuthInitiator.js'],
+                dest: '<%= dirs.dest %>/<%= pkg.name %>.js'
+            }
+        },
+        uglify: {
+            options: {
+                banner: '<%= meta.banner %>'
+            },
+            dist: {
+                src: ['<%= concat.dist.dest %>'],
+                dest: '<%= dirs.dest %>/<%= pkg.name %>.min.js'
+            }
+        },
+        // Zips the dist to a file
+        compress: {
+            dist: {
+                options: {
+                    archive: '<%= dirs.dest %>/<%= pkg.name %>.zip'
+                },
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        src: '**/*.js',
+                        cwd: '<%= dirs.dest %>'
+                    }
+                ]
+            }
+        },
+        // Empties folders to start fresh
+        clean: {
+            dist: {
+                files: [
+                    {
+                        dot: true,
+                        src: [
+                            '<%= dirs.dest %>/{,*/}*',
+                            '<%= dirs.coverage %>/{,*/}*',
+                            '!<%= dirs.dest %>/.git*'
+                        ]
+                    }
+                ]
+            }
+        },
+        karma: {
+            options: {
+                autowatch: true,
+                configFile: 'test/karma.conf.js'
+            },
+            unit: {}
+        },
+        jshint: {
+            grunt: {
+                src: ['Gruntfile.js'],
+                options: {
+                    node: true
+                }
+            },
+            dev: {
+                src: '<%= concat.dist.src %>',
+                options: {}
+            },
+            test: {
+                src: ['test/spec/**/*.js'],
+                options: {
+                    jshintrc: 'test/.jshintrc'
+                }
+            }
         }
-    },
-    uglify: {
-      options: {
-        banner: '<%= meta.banner %>',
-        mangle: {
-          except: ['UsfCAStokenAuthConstant']
-        }
-      },
-      dist: {
-        src: ['<%= concat.dist.dest %>'],
-        dest: '<%= dirs.dest %>/<%= pkg.name %>.min.js'
-      }
-    },
-    jshint: {
-      files: ['Gruntfile.js', 'src/*.js'],
-      options: {
-        jshintrc: true
-      }
-    },
-    changelog: {
-      options: {
-        dest: 'CHANGELOG.md'
-      }
-    }
-  });
+    });
 
-  // Load the plugin that provides the "jshint" task.
-  grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.registerTask('test', [
+        'karma'
+    ]);
 
-  // Load the plugin that provides the "concat" task.
-  grunt.loadNpmTasks('grunt-contrib-concat');
-
-  // Load the plugin that provides the "uglify" task.
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-
-  grunt.loadNpmTasks('grunt-bower-task');
-
-  grunt.renameTask('bower', 'bowerInstall');
-
-  // grunt.loadNpmTasks('grunt-karma');
-
-  grunt.loadNpmTasks('grunt-conventional-changelog');
-
-  grunt.loadNpmTasks('grunt-zip');
-
-
-  // Default task.
-  grunt.registerTask('default', ['build']);
-
-  // Build task.
-  // grunt.registerTask('build', ['bowerInstall', 'karma:build', 'karma:buildUnderscore', 'concat', 'uglify', 'zip']);
-  grunt.registerTask('build', ['bowerInstall', 'concat', 'uglify', 'zip']);
-
-  // grunt.registerTask('test', ['karma:build', 'karma:buildUnderscore']);
-  grunt.registerTask('test', []);
-
-  // grunt.registerTask('test-debug', ['karma:debug']);
-  grunt.registerTask('test-debug', []);
-
-  // grunt.registerTask('travis', ['karma:travis', 'karma:travisUnderscore']);
-  grunt.registerTask('travis', []);
-
-  // Provides the "bump" task.
-  grunt.registerTask('bump', 'Increment version number', function() {
-    var versionType = grunt.option('type');
-    function bumpVersion(version, versionType) {
-      var type = {patch: 2, minor: 1, major: 0},
-          parts = version.split('.'),
-          idx = type[versionType || 'patch'];
-      parts[idx] = parseInt(parts[idx], 10) + 1;
-      while(++idx < parts.length) { parts[idx] = 0; }
-      return parts.join('.');
-    }
-    var version;
-    function updateFile(file) {
-      var json = grunt.file.readJSON(file);
-      version = json.version = bumpVersion(json.version, versionType || 'patch');
-      grunt.file.write(file, JSON.stringify(json, null, '  '));
-    }
-    updateFile('package.json');
-    updateFile('bower.json');
-    grunt.log.ok('Version bumped to ' + version);
-  });
-
+    grunt.registerTask('default', [
+        'jshint',
+        'test'
+    ]);
+    
+    grunt.registerTask('dist', [
+        'clean',
+        'concat',
+        'uglify',
+        'compress'
+    ]);
 };
