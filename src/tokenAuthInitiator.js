@@ -24,8 +24,8 @@ angular.module('UsfCAStokenAuth')
     $rootScope.$on('$locationChangeStart', function(event, changeTo, changeFrom) {
         var nextPath = $location.path();
         var matchingPaths = [ tokenAuth.getLogoutRoute() ];
-        if ($injector.has('tokenAuthConstant')) {
-            var tokenAuthConstant = $injector.get('tokenAuthConstant');
+        if ($injector.has('UsfCAStokenAuthConstant')) {
+            var tokenAuthConstant = $injector.get('UsfCAStokenAuthConstant');
             if('loginRoute' in tokenAuthConstant) {
                 matchingPaths.push(tokenAuthConstant.loginRoute);
             }

@@ -1,6 +1,6 @@
 {
     "name": "usfcastokenauth",
-    "version": "2.0.0",
+    "version": "1.0.0",
     "main": "dist/usfcastokenauth.min.js",
     "description": "USF Service for CAS backed Token Authentication",
     "homepage": "https://github.com/jamjon3/UsfCAStokenAuth",

@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v2.0.0 - 2016-01-26
+ * @version v1.0.0 - 2016-01-26
  * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Apache 2.0 License, https://opensource.org/licenses/Apache-2.0
@@ -147,8 +147,8 @@ angular.module('UsfCAStokenAuth', [
          * @returns {String}
          */
         getLogoutRoute: function() {
-            if ($injector.has('tokenAuthConstant')) {
-                var tokenAuthConstant = $injector.get('tokenAuthConstant');
+            if ($injector.has('UsfCAStokenAuthConstant')) {
+                var tokenAuthConstant = $injector.get('UsfCAStokenAuthConstant');
                 if('logoutRoute' in tokenAuthConstant) {
                     return tokenAuthConstant.logoutRoute;
                 }
@@ -160,8 +160,8 @@ angular.module('UsfCAStokenAuth', [
          * @returns {String}
          */
         getLoginRoute: function() {
-            if ($injector.has('tokenAuthConstant')) {
-                var tokenAuthConstant = $injector.get('tokenAuthConstant');
+            if ($injector.has('UsfCAStokenAuthConstant')) {
+                var tokenAuthConstant = $injector.get('UsfCAStokenAuthConstant');
                 if('loginRoute' in tokenAuthConstant) {
                     return tokenAuthConstant.loginRoute;
                 }
@@ -173,8 +173,8 @@ angular.module('UsfCAStokenAuth', [
          * @returns {String}
          */
         getUnauthorizedRoute: function() {
-            if ($injector.has('tokenAuthConstant')) {
-                var tokenAuthConstant = $injector.get('tokenAuthConstant');
+            if ($injector.has('UsfCAStokenAuthConstant')) {
+                var tokenAuthConstant = $injector.get('UsfCAStokenAuthConstant');
                 if('unauthorizedRoute' in tokenAuthConstant) {
                     return tokenAuthConstant.unauthorizedRoute;
                 }
@@ -192,8 +192,8 @@ angular.module('UsfCAStokenAuth', [
          * Checks to see if debug is turned on
          */
         isDebugEnabled: function() {
-            if ($injector.has('tokenAuthConstant')) {
-                var tokenAuthConstant = $injector.get('tokenAuthConstant');
+            if ($injector.has('UsfCAStokenAuthConstant')) {
+                var tokenAuthConstant = $injector.get('UsfCAStokenAuthConstant');
                 if('debug' in tokenAuthConstant) {
                     return tokenAuthConstant.debug;
                 }
@@ -232,8 +232,8 @@ angular.module('UsfCAStokenAuth', [
     // Handles the login by redirecting to login page
     $rootScope.$on('event:tokenAuthLogin',function() {
         // Reload the page or route in the logged in state with the cookie now present
-        if ($injector.has('tokenAuthConstant')) {
-            var tokenAuthConstant = $injector.get('tokenAuthConstant');
+        if ($injector.has('UsfCAStokenAuthConstant')) {
+            var tokenAuthConstant = $injector.get('UsfCAStokenAuthConstant');
             if('loginRoute' in tokenAuthConstant) {
                 $location.path(tokenAuthConstant.loginRoute);
             } else {
@@ -317,8 +317,8 @@ angular.module('UsfCAStokenAuth')
          * Checks to see if debug is turned on
          */
         isDebugEnabled: function() {
-            if ($injector.has('tokenAuthConstant')) {
-                var tokenAuthConstant = $injector.get('tokenAuthConstant');
+            if ($injector.has('UsfCAStokenAuthConstant')) {
+                var tokenAuthConstant = $injector.get('UsfCAStokenAuthConstant');
                 if('debug' in tokenAuthConstant) {
                     return tokenAuthConstant.debug;
                 }
@@ -447,8 +447,8 @@ angular.module('UsfCAStokenAuth')
     $rootScope.$on('$locationChangeStart', function(event, changeTo, changeFrom) {
         var nextPath = $location.path();
         var matchingPaths = [ tokenAuth.getLogoutRoute() ];
-        if ($injector.has('tokenAuthConstant')) {
-            var tokenAuthConstant = $injector.get('tokenAuthConstant');
+        if ($injector.has('UsfCAStokenAuthConstant')) {
+            var tokenAuthConstant = $injector.get('UsfCAStokenAuthConstant');
             if('loginRoute' in tokenAuthConstant) {
                 matchingPaths.push(tokenAuthConstant.loginRoute);
             }

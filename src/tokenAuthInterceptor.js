@@ -19,8 +19,8 @@ angular.module('UsfCAStokenAuth')
          * Checks to see if debug is turned on
          */
         isDebugEnabled: function() {
-            if ($injector.has('tokenAuthConstant')) {
-                var tokenAuthConstant = $injector.get('tokenAuthConstant');
+            if ($injector.has('UsfCAStokenAuthConstant')) {
+                var tokenAuthConstant = $injector.get('UsfCAStokenAuthConstant');
                 if('debug' in tokenAuthConstant) {
                     return tokenAuthConstant.debug;
                 }
