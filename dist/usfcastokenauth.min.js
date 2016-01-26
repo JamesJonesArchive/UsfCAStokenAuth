@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v2.0.0 - 2016-01-25
+ * @version v2.0.0 - 2016-01-26
  * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Apache 2.0 License, https://opensource.org/licenses/Apache-2.0
