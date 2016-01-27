@@ -175,13 +175,14 @@ angular.module('UsfCAStokenAuth', [
         },
         /**
          * Retrieves the main module name
-         * @returns string
+         * @returns {String}
          */
         getAppName: function() {
             return $rootElement.attr('ng-app');
         },
         /**
          * Checks to see if debug is turned on
+         * @returns {Boolean} 
          */
         isDebugEnabled: function() {
             if ($injector.has('UsfCAStokenAuthConstant')) {
@@ -194,6 +195,7 @@ angular.module('UsfCAStokenAuth', [
         },
         /**
          * Returns the global login state true or false based on the global session cookie
+         * @returns {Boolean} 
          */
         isLoggedIn: function() {            
             var sessionCookie = $cookies.get(service.getAppName());

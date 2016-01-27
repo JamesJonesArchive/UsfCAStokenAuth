@@ -30,12 +30,35 @@ angular
 ```
 ## Wiring up services with Constants
 
+Beginning with version 1.0.0, configuring you app with this constant is optional. Prior to 1.0.0,
+it's mandatory.
+
+In a Yeoman angular app, the constant would be placed the 'app.js' right above the "config" section.
+
+### 1.0.0 Constant Usage
+
+The plugin has some default routes it uses that you can override by providing key/value pairs.
+
+Here's an example with the options you can override the built in defaults. 
+
+```
+.constant('UsfCAStokenAuthConstant',{
+    'unauthorizedRoute': '/unauthorized',
+    'logoutRoute': '/logout',
+    'loginRoute': '/login',
+    'debug': false
+})
+```
+
+Note: You can turn debugging on by setting the 'debug' key to true which will send debugging output to the console log
+
+### Pre 1.0.0 Constant Usage
+
 Your token services needs to be wired up as a "constant" in your application. This is
 done by defining the 'UsfCAStokenAuthConstant' with a unique id value on the 'applicationUniqueId' key
 (can be any arbitrary string) along with assigning key/value pairs on the "applicationResources" key. 
 
-In a Yeoman angular app, the constant would be placed the 'app.js' right above the "config" section. Here's
-an example with a service defined as "exampleResource" and it's service URL:
+Here's an example with a service defined as "exampleResource" and it's service URL:
 
 ```
 .constant('UsfCAStokenAuthConstant',{
@@ -103,7 +126,7 @@ a token protected function that will trigger the actual login.
 
 ## Handling Logout Requests
 
-You'll need a route to handle logout. You create the route and tell the pluging where to go after it clears
+You'll need a route to handle logout. You create the route and tell the plugin where to go after it clears
 it's session(s) with the token server(s). In the example constants above, the 'logoutRoute' is defined as 'logout'.
 That means you'll need to create a route for it and wire it into your routes.
 
@@ -145,6 +168,41 @@ One thing to notice is the delete of the header "X-Requested-With" at the end. T
 with an "Options" request.
 
 ## Usage
+
+### 1.0.0+ Usage
+
+The plugin was rewritten to make configuration optional. You can inject the 'tokenAuth' service when you need to access any 
+it's internal methods (particularly for login and logout). The config object in $http and $resource calls to look for a 'tokenKey'
+(which is any arbitrary string you want) so any such requests will be handled as webtoken requests. Here's an example of how to 
+make $http and $resource requests handled as webtoken requests:
+
+```
+angular.module('angCorstokenApp')
+    .factory('exampleService',['$resource','tokenAuth', function ($resource,tokenAuth) {      
+      var ExampleResource = $resource('https://somecompany.com/~jdoe/ExampleApp/servicesOther.php',{},{
+          'list': {
+            method: 'POST', params: {'service': 'list'},responseType: 'json',tokenKey: 'exampleKey' }
+          }
+      });
+      var ExampleHttp = $http({ url: 'https://somecompany.com/~jdoe/ExampleApp/servicesOther.php', tokenKey: 'exampleKey', method: 'POST', params: {'service': 'list'},responseType: 'json' })
+      // Public API here
+      return {
+        list: function () {
+          return ExampleResource.list({}).$promise;
+        },
+        exampleHttp: function() {
+          return ExampleHttp;
+        }
+      };
+    }]); 
+```
+
+You'll notice the key ```tokenKey: 'exampleKey'```. This tells the plugin to handle the request URL as a token request. If you have services
+on different 'AuthTransfer' servers, you'll need to specify a _separate_ 'tokenKey' for each server. Note: you do not need to specify separate tokenKey's
+if your services are all on the same 'AuthTransfer' server. However, you _will_ need to use the same unique tokenKey for each 'AuthTransfer' that's handling
+your services. 
+
+### Pre 1.0.0 Usage
 
 Your service URL's are stored in the constant so you can easily refer to them by the applicationResource 'key'
 using a function from this plugin. You'll need to inject the 'tokenAuth' service into your service or controller
@@ -203,6 +261,12 @@ The plugin handles the rest and stores your tokens and such. Make sure your appl
 
 ## Bypassing this auth module
 
+### 1.0.0+ Usage
+
+As long as a 'tokenKey' is not specified in the config of a $http or $resource request, the auth module is effectively bypassed.
+
+### Pre 1.0.0 Usage
+
 If you have a http or resource service you want bypassed by this modules handling you can pass 'ignoreAuthModule' with a value of 'true' into the $http or $resource config. That may look something like:
 
 ```
@@ -228,39 +292,39 @@ which will make the user login again. This is useful to use on a "Logout" button
 ```
 tokenAuth.clearToken('myAppKey');
 ```
-The 'clearToken' method will clear the associated token connected to the provided tokenKey.
+(All versions) The 'clearToken' method will clear the associated token connected to the provided tokenKey.
 
 ```
 tokenAuth.clearTokens();
 ```
-The 'clearTokens' method will clear all tokens on all tokenKeys.
+(All versions) The 'clearTokens' method will clear all tokens on all tokenKeys.
 
 ```
 tokenAuth.hasToken('myAppKey');
 ```
-The 'hasToken' method will return 'true' or 'false' if a token is currently stored corresponding to the provided tokenKey.
+(All versions) The 'hasToken' method will return 'true' or 'false' if a token is currently stored corresponding to the provided tokenKey.
 
 ```
 tokenAuth.clearLocalStorage();
 ```
-The 'clearLocalStorage' method clears ALL local storage
+(All versions) The 'clearLocalStorage' method clears ALL local storage
 
 ```
 tokenAuth.sessionLogout();
 ```
-The 'sessionLogout' method clears out any existing session cookie and does a logout on the token server
+(All versions) The 'sessionLogout' method clears out any existing session cookie and does a logout on the token server
 
 ```
 tokenAuth.isLoggedIn();
 ```
-The 'isLoggedIn' method return true or false on the global login condition based on the existence of the session cookie
+(All versions) The 'isLoggedIn' method return true or false on the global login condition based on the existence of the session cookie
 
 ```
 tokenAuth.getResourceUrl('myAppKey');
 ```
-The 'getResourceUrl' method looks up the URL associated with the provided AppKey and returns it.
+(pre 1.0.0 only) The 'getResourceUrl' method looks up the URL associated with the provided AppKey and returns it.
 
 ```
 tokenAuth.isDebugEnabled();
 ```
-The 'isDebugEnabled' method checks to see if debugging is turned on in the constants declation for the plugin.
+(All versions) The 'isDebugEnabled' method checks to see if debugging is turned on in the constants declaration for the plugin.

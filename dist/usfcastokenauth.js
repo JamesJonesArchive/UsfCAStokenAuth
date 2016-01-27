@@ -1,6 +1,6 @@
 /**
  * USF Service for CAS backed Token Authentication
- * @version v1.0.0 - 2016-01-26
+ * @version v1.0.0 - 2016-01-27
  * @link https://github.com/jamjon3/UsfCAStokenAuth
  * @author James Jones <jamjon3@gmail.com>
  * @license Apache 2.0 License, https://opensource.org/licenses/Apache-2.0
@@ -183,13 +183,14 @@ angular.module('UsfCAStokenAuth', [
         },
         /**
          * Retrieves the main module name
-         * @returns string
+         * @returns {String}
          */
         getAppName: function() {
             return $rootElement.attr('ng-app');
         },
         /**
          * Checks to see if debug is turned on
+         * @returns {Boolean} 
          */
         isDebugEnabled: function() {
             if ($injector.has('UsfCAStokenAuthConstant')) {
@@ -202,6 +203,7 @@ angular.module('UsfCAStokenAuth', [
         },
         /**
          * Returns the global login state true or false based on the global session cookie
+         * @returns {Boolean} 
          */
         isLoggedIn: function() {            
             var sessionCookie = $cookies.get(service.getAppName());
@@ -464,15 +466,13 @@ angular.module('UsfCAStokenAuth')
             if (tokenAuth.isDebugEnabled()) {
                 $log.info("$locationChangeStart path matched on: " + nextPath + " which is " + changeTo);
             }
+            /**
+             * Fully reload the page, not just the route
+             */
             // event.preventDefault();
             $rootScope.$evalAsync(function () {
                 $window.location.assign(changeTo);
             });
-            // $window.location.reload(true);
-        //} else if (!tokenAuth.isLoggedIn() && ('loginRoute' in UsfCAStokenAuthConstant)?(UsfCAStokenAuthConstant.loginRoute !== nextPath):false) {
-            //  $rootScope.$evalAsync(function () {
-            //    $location.path(UsfCAStokenAuthConstant.loginRoute);
-        //  });
         }
     });
     // Add the logout function in the root scope with the redirect to the logout rounte

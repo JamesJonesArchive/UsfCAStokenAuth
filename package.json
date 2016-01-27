@@ -20,7 +20,8 @@
     "keywords": [
         "AngularJS",
         "web",
-        "token"
+        "token",
+        "CAS"
     ],
     "engines": {
         "npm": ">=1.3.7",

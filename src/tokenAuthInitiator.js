@@ -41,15 +41,13 @@ angular.module('UsfCAStokenAuth')
             if (tokenAuth.isDebugEnabled()) {
                 $log.info("$locationChangeStart path matched on: " + nextPath + " which is " + changeTo);
             }
+            /**
+             * Fully reload the page, not just the route
+             */
             // event.preventDefault();
             $rootScope.$evalAsync(function () {
                 $window.location.assign(changeTo);
             });
-            // $window.location.reload(true);
-        //} else if (!tokenAuth.isLoggedIn() && ('loginRoute' in UsfCAStokenAuthConstant)?(UsfCAStokenAuthConstant.loginRoute !== nextPath):false) {
-            //  $rootScope.$evalAsync(function () {
-            //    $location.path(UsfCAStokenAuthConstant.loginRoute);
-        //  });
         }
     });
     // Add the logout function in the root scope with the redirect to the logout rounte
